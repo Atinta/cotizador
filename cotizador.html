@@ -56,14 +56,12 @@
             animation: spin 1s ease-in-out infinite; 
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-        /* MEJORA UX: Animación de feedback de precio más notoria */
         @keyframes price-update-glow { 
             0% { background-color: transparent; } 
             40% { background-color: #dbeafe; box-shadow: 0 0 12px #bfdbfe; } 
             100% { background-color: transparent; } 
         }
         .sofia-morales-cotizador .price-updated { animation: price-update-glow 0.8s ease-out; }
-        /* MEJORA UX: Animación para el botón de enviar "inteligente" */
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.03); }
@@ -87,9 +85,10 @@
             <input type="hidden" name="_next" value="https://www.stickersatinta.com/gracias">
             <input type="hidden" name="_captcha" value="false">
 
-            <div class="flex flex-col lg:flex-row gap-10">
+            <!-- FIX LAYOUT: Revertido a grid para un comportamiento robusto en desktop y móvil -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
                 
-                <div class="lg:w-1/2 space-y-6">
+                <div class="space-y-6">
                     <div id="step-1">
                         <label class="font-bold text-lg text-gray-800 block mb-3">1. Elige la Forma</label>
                         <div id="shape-options" class="grid grid-cols-3 gap-2 md:gap-4"></div>
@@ -104,12 +103,10 @@
                         <label class="font-bold text-lg text-gray-800 block mb-3">2. Ingresa las Dimensiones (cm)</label>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <!-- MEJORA UX: Teclado numérico en móviles -->
                                 <input id="width" type="number" inputmode="decimal" placeholder="Ancho" class="form-input w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" aria-label="Ancho en centímetros">
                                 <p id="width-error" class="error-message hidden text-red-500 text-sm mt-1"></p>
                             </div>
                             <div>
-                                <!-- MEJORA UX: Teclado numérico en móviles -->
                                 <input id="height" type="number" inputmode="decimal" placeholder="Alto" class="form-input w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" aria-label="Alto en centímetros">
                                 <p id="height-error" class="error-message hidden text-red-500 text-sm mt-1"></p>
                             </div>
@@ -125,14 +122,14 @@
                     </div>
                     <div id="step-4">
                         <label for="quantity" class="font-bold text-lg text-gray-800 block mb-3">4. Ingresa la Cantidad</label>
-                        <!-- MEJORA UX: Teclado numérico en móviles -->
                         <input id="quantity" type="number" inputmode="decimal" class="form-input w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Ej: 1500" aria-label="Cantidad de stickers">
                         <p id="quantity-error" class="error-message hidden text-red-500 text-sm mt-1"></p>
                     </div>
                 </div>
 
-                <div class="lg:w-1/2">
-                    <div id="summary-card" class="bg-gray-50 rounded-lg p-6 h-fit">
+                <!-- FIX LAYOUT: Se restaura el 'sticky' para desktop -->
+                <div class="lg:sticky top-8 h-fit">
+                    <div id="summary-card" class="bg-gray-50 rounded-lg p-6">
                         <h3 class="text-xl font-bold mb-4">Resumen de Cotización</h3>
                         <div id="price-summary-container" class="space-y-3 text-gray-600 mb-6" aria-live="polite">
                             <div class="flex justify-between"><span>Forma:</span> <span id="summary-shape" class="font-semibold">--</span></div>
@@ -237,11 +234,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // MEJORA UX: Función de Auto-Scroll
     const scrollToElement = (element) => {
-        if (window.innerWidth < 1024) { // Solo se activa en pantallas de tipo móvil/tablet
+        if (window.innerWidth < 1024) { 
             setTimeout(() => {
-                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 300);
         }
     };
@@ -322,7 +318,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 dom.summary.totalPriceWrapper.classList.add('price-updated');
             }
             dom.submitButton.disabled = !isValid;
-            // MEJORA UX: Botón de envío "inteligente"
             dom.submitButton.classList.toggle('ready-to-submit', isValid);
         },
         validateInput: (input, errorEl, touchedFlag) => {
@@ -367,7 +362,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     dom.inputs.height.disabled = false;
                 }
                 ui.update();
-                // MEJORA UX: Auto-Scroll
                 scrollToElement(dom.steps.step2);
             });
             dom.roundedCornersCheckbox.addEventListener('change', e => {
@@ -385,7 +379,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     dom.finishOptionsContainer.classList.remove('hidden');
                 }
                 ui.update();
-                // MEJORA UX: Auto-Scroll
                 scrollToElement(dom.finishOptionsContainer);
             });
             dom.finishOptions.addEventListener('click', e => {
@@ -405,7 +398,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     ui.update();
                     if (key === 'quantity' && e.target.value.length > 3) {
-                        // MEJORA UX: Auto-Scroll
                         scrollToElement(dom.steps.contact);
                     }
                 });
