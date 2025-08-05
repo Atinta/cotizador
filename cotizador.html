@@ -9,7 +9,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        html { scroll-behavior: smooth; }
         body { 
             margin: 0; 
             padding: 0; 
@@ -73,7 +72,7 @@
 </head>
 <body>
 
-<div id="cotizador-container" class="sofia-morales-cotizador">
+<div class="sofia-morales-cotizador">
     <div class="bg-white p-4 md:p-8 rounded-2xl shadow-xl max-w-5xl mx-auto">
         <div class="text-center mb-8 md:mb-10">
             <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">Crea tu Sticker Perfecto</h2>
@@ -214,7 +213,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     const state = { shape: null, width: null, height: null, material: null, finish: null, quantity: null, roundedCorners: false, touched: { width: false, height: false, quantity: false } };
     const dom = {
-        container: document.querySelector('#cotizador-container'),
         shapeOptions: document.querySelector('#shape-options'),
         roundedCornersContainer: document.querySelector('#rounded-corners-container'),
         roundedCornersCheckbox: document.querySelector('#rounded-corners-checkbox'),
@@ -224,23 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
         inputs: { width: document.querySelector('#width'), height: document.querySelector('#height'), quantity: document.querySelector('#quantity') },
         errors: { width: document.querySelector('#width-error'), height: document.querySelector('#height-error'), quantity: document.querySelector('#quantity-error') },
         summary: { shape: document.querySelector('#summary-shape'), size: document.querySelector('#summary-size'), material: document.querySelector('#summary-material'), quantity: document.querySelector('#summary-quantity'), unitPrice: document.querySelector('#unit-price'), netPrice: document.querySelector('#net-price'), ivaPrice: document.querySelector('#iva-price'), totalPrice: document.querySelector('#total-price'), totalPriceWrapper: document.querySelector('#total-price-wrapper') },
-        submitButton: document.querySelector('#submit-button'),
-        steps: {
-            step2: document.querySelector('#step-2'),
-            step3: document.querySelector('#step-3'),
-            step4: document.querySelector('#step-4'),
-            contact: document.querySelector('#contact-details')
-        }
-    };
-
-    const scrollToElement = (element) => {
-        if (window.innerWidth < 1024) { 
-            setTimeout(() => {
-                const yOffset = -80; 
-                const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-                window.scrollTo({top: y, behavior: 'smooth'});
-            }, 300);
-        }
+        submitButton: document.querySelector('#submit-button')
     };
 
     const calculator = {
@@ -363,7 +345,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     dom.inputs.height.disabled = false;
                 }
                 ui.update();
-                scrollToElement(dom.steps.step2);
             });
             dom.roundedCornersCheckbox.addEventListener('change', e => {
                 state.roundedCorners = e.target.checked;
@@ -380,7 +361,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     dom.finishOptionsContainer.classList.remove('hidden');
                 }
                 ui.update();
-                scrollToElement(dom.finishOptionsContainer);
             });
             dom.finishOptions.addEventListener('click', e => {
                 const button = e.target.closest('button'); if (!button) return;
@@ -398,9 +378,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         state.height = state.width;
                     }
                     ui.update();
-                    if (key === 'quantity' && e.target.value.length > 3) {
-                        scrollToElement(dom.steps.contact);
-                    }
                 });
             });
         }
@@ -411,23 +388,9 @@ document.addEventListener('DOMContentLoaded', () => {
         ui.update();
     }
     main();
-
-    // SCRIPT DE AUTO-RESIZE PARA ELIMINAR DOBLE SCROLL
-    const sendHeight = () => {
-        const height = document.getElementById('cotizador-container').offsetHeight;
-        window.parent.postMessage({ type: 'resize', height: height + 30 }, '*');
-    };
-
-    // Enviar altura al cargar y al cambiar tamaño de la ventana
-    window.addEventListener('load', sendHeight);
-    window.addEventListener('resize', sendHeight);
-
-    // Usar ResizeObserver para detectar cambios en el contenido (más robusto)
-    const observer = new ResizeObserver(sendHeight);
-    observer.observe(dom.container);
-
 });
 </script>
 
 </body>
 </html>
+```
