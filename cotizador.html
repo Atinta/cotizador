@@ -12,7 +12,7 @@
         body { 
             margin: 0; 
             padding: 0; 
-            background-color: transparent; /* Fondo transparente para integrarse */
+            background-color: transparent; 
         }
         .sofia-morales-cotizador { 
             font-family: 'Inter', sans-serif; 
@@ -66,10 +66,10 @@
 <body>
 
 <div class="sofia-morales-cotizador">
-    <div class="bg-white p-6 md:p-8 rounded-2xl shadow-xl max-w-5xl mx-auto">
-        <div class="text-center mb-10">
-            <h2 class="text-2xl md:text-4xl font-extrabold text-gray-900 tracking-tight">Crea tu Sticker Perfecto</h2>
-            <p class="max-w-xl mx-auto text-base md:text-lg text-gray-600 mt-2">Configura tus opciones, obtén tu precio al instante y solicita tu cotización.</p>
+    <div class="bg-white p-4 md:p-8 rounded-2xl shadow-xl max-w-5xl mx-auto">
+        <div class="text-center mb-8 md:mb-10">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">Crea tu Sticker Perfecto</h2>
+            <p class="max-w-xl mx-auto text-base md:text-lg text-gray-600 mt-2">Configura tus opciones y obtén tu precio al instante.</p>
         </div>
         
         <form id="cotizador-form" action="https://formsubmit.co/benjamin@stickersatinta.com" method="POST" enctype="multipart/form-data">
@@ -77,12 +77,13 @@
             <input type="hidden" name="_next" value="https://www.stickersatinta.com/gracias">
             <input type="hidden" name="_captcha" value="false">
 
-            <!-- FIX MÓVIL: Cambiado a 'grid-cols-1 md:grid-cols-2' para que las columnas se apilen en móvil -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                <div class="space-y-6">
+            <!-- LAYOUT MÓVIL: Las columnas ahora se apilan verticalmente en móvil y pasan a 2 columnas en desktop -->
+            <div class="flex flex-col lg:flex-row gap-10">
+                
+                <!-- Columna de Configuración -->
+                <div class="lg:w-1/2 space-y-6">
                     <div>
                         <label class="font-bold text-lg text-gray-800 block mb-3">1. Elige la Forma</label>
-                        <!-- FIX MÓVIL: Se mantiene grid-cols-3 pero con padding ajustado en el botón para mejor calce -->
                         <div id="shape-options" class="grid grid-cols-3 gap-2 md:gap-4"></div>
                         <div id="rounded-corners-container" class="collapsible-content hidden mt-4">
                             <label class="flex items-center space-x-2 cursor-pointer bg-gray-50 p-3 rounded-lg">
@@ -109,7 +110,6 @@
                         <div id="material-options" class="space-y-3"></div>
                         <div id="finish-options-container" class="collapsible-content hidden mt-4">
                              <label class="font-bold text-md text-gray-700 block mb-2">3a. Elige el Acabado</label>
-                             <!-- FIX MÓVIL: Cambiado a 'grid-cols-2' para que siempre se vea bien -->
                              <div id="finish-options" class="grid grid-cols-2 gap-4"></div>
                         </div>
                     </div>
@@ -119,35 +119,38 @@
                         <p id="quantity-error" class="error-message hidden text-red-500 text-sm mt-1"></p>
                     </div>
                 </div>
-                <!-- FIX MÓVIL: Eliminado 'sticky' para que no cause problemas de visibilidad en móvil -->
-                <div class="bg-gray-50 rounded-lg p-6 h-fit">
-                    <h3 class="text-xl font-bold mb-4">Resumen de Cotización</h3>
-                    <div id="price-summary-container" class="space-y-3 text-gray-600 mb-6" aria-live="polite">
-                        <div class="flex justify-between"><span>Forma:</span> <span id="summary-shape" class="font-semibold">--</span></div>
-                        <div class="flex justify-between"><span>Tamaño:</span> <span id="summary-size" class="font-semibold">--</span></div>
-                        <div class="flex justify-between"><span>Material:</span> <span id="summary-material" class="font-semibold">--</span></div>
-                        <div class="flex justify-between"><span>Cantidad:</span> <span id="summary-quantity" class="font-semibold">--</span></div>
-                    </div>
-                    <div class="border-t border-gray-300 pt-4 mb-6 space-y-2">
-                        <div class="flex justify-between items-center"><span class="text-md text-gray-600">Valor Unitario (Neto):</span><span id="unit-price" class="text-md font-semibold text-gray-800">$0</span></div>
-                        <div class="flex justify-between items-center"><span class="text-md text-gray-600">Valor Neto:</span><span id="net-price" class="text-md font-semibold text-gray-800">$0</span></div>
-                        <div class="flex justify-between items-center"><span class="text-md text-gray-600">IVA (19%):</span><span id="iva-price" class="text-md font-semibold text-gray-800">$0</span></div>
-                        <div id="total-price-wrapper" class="flex justify-between items-center mt-2 pt-2 border-t border-dashed rounded-md -mx-2 px-2"><span class="text-lg font-bold">Total a Pagar:</span><span id="total-price" class="text-xl md:text-3xl font-black action-text">$0</span></div>
-                    </div>
-                     <div class="border-t border-gray-300 pt-4 space-y-4">
-                        <h3 class="font-bold text-lg text-gray-800">Tus Datos para Enviar</h3>
-                        <div>
-                            <label for="name" class="text-sm font-medium text-gray-700">Nombre</label>
-                            <input type="text" id="name" name="name" required class="form-input mt-1 block w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+
+                <!-- Columna de Resumen y Envío -->
+                <div class="lg:w-1/2">
+                    <div class="bg-gray-50 rounded-lg p-6 h-fit">
+                        <h3 class="text-xl font-bold mb-4">Resumen de Cotización</h3>
+                        <div id="price-summary-container" class="space-y-3 text-gray-600 mb-6" aria-live="polite">
+                            <div class="flex justify-between"><span>Forma:</span> <span id="summary-shape" class="font-semibold">--</span></div>
+                            <div class="flex justify-between"><span>Tamaño:</span> <span id="summary-size" class="font-semibold">--</span></div>
+                            <div class="flex justify-between"><span>Material:</span> <span id="summary-material" class="font-semibold">--</span></div>
+                            <div class="flex justify-between"><span>Cantidad:</span> <span id="summary-quantity" class="font-semibold">--</span></div>
                         </div>
-                         <div>
-                            <label for="email" class="text-sm font-medium text-gray-700">Email</label>
-                            <input type="email" id="email" name="email" required class="form-input mt-1 block w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <div class="border-t border-gray-300 pt-4 mb-6 space-y-2">
+                            <div class="flex justify-between items-center"><span class="text-md text-gray-600">Valor Unitario (Neto):</span><span id="unit-price" class="text-md font-semibold text-gray-800">$0</span></div>
+                            <div class="flex justify-between items-center"><span class="text-md text-gray-600">Valor Neto:</span><span id="net-price" class="text-md font-semibold text-gray-800">$0</span></div>
+                            <div class="flex justify-between items-center"><span class="text-md text-gray-600">IVA (19%):</span><span id="iva-price" class="text-md font-semibold text-gray-800">$0</span></div>
+                            <div id="total-price-wrapper" class="flex justify-between items-center mt-2 pt-2 border-t border-dashed rounded-md -mx-2 px-2"><span class="text-lg font-bold">Total a Pagar:</span><span id="total-price" class="text-2xl md:text-3xl font-black action-text">$0</span></div>
                         </div>
-                        <button id="submit-button" type="submit" class="w-full py-3 text-lg font-bold text-white action-bg rounded-lg shadow-md hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center">
-                            <span id="submit-button-text">Enviar Cotización</span>
-                            <div id="submit-spinner" class="spinner hidden"></div>
-                        </button>
+                         <div class="border-t border-gray-300 pt-4 space-y-4">
+                            <h3 class="font-bold text-lg text-gray-800">Tus Datos para Enviar</h3>
+                            <div>
+                                <label for="name" class="text-sm font-medium text-gray-700">Nombre</label>
+                                <input type="text" id="name" name="name" required class="form-input mt-1 block w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                             <div>
+                                <label for="email" class="text-sm font-medium text-gray-700">Email</label>
+                                <input type="email" id="email" name="email" required class="form-input mt-1 block w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            <button id="submit-button" type="submit" class="w-full py-3 text-lg font-bold text-white action-bg rounded-lg shadow-md hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center">
+                                <span id="submit-button-text">Enviar Cotización</span>
+                                <div id="submit-spinner" class="spinner hidden"></div>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -187,12 +190,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 { minQuantity: 1000, cost: 50000 }
             ]
         },
-        // ===================================================================
-        // == SECCIÓN DE PRECIOS - ¡EDITAR AQUÍ! ==
-        // ===================================================================
-        // Modifica estos valores para cambiar tu curva de precios.
-        // 'minQuantity' es la cantidad mínima para aplicar el multiplicador 'markup'.
-        // El sistema siempre usará el primer tramo que cumpla la condición (de mayor a menor).
         priceTiers: [
             { minQuantity: 180000, markup: 2.0 }, { minQuantity: 150000, markup: 2.02 }, { minQuantity: 100000, markup: 2.05 },
             { minQuantity: 75000,  markup: 2.08 }, { minQuantity: 50000,  markup: 2.11 }, { minQuantity: 30000,  markup: 2.16 },
@@ -200,11 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
             { minQuantity: 7500,   markup: 2.29 }, { minQuantity: 5000,   markup: 2.33 },{ minQuantity: 3500,   markup: 2.37 },
             { minQuantity: 2500,   markup: 2.4 },{ minQuantity: 1500,   markup: 2.46 },{ minQuantity: 1000,   markup: 2.5 }
         ],
-        // ===================================================================
-        // == FIN DE LA SECCIÓN DE PRECIOS ==
-        // ===================================================================
         shapes: [ 
-            // FIX MÓVIL: Ajustado padding y tamaño de texto para mejor visualización
             { id: 'rectangular', name: 'Rectangular', multiplier: 1.0, icon: '<svg class="w-8 h-8 md:w-10 md:h-10 mx-auto mb-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 3h16v16H4z"></path></svg>' },
             { id: 'circular', name: 'Circular', multiplier: 1.0, icon: '<svg class="w-8 h-8 md:w-10 md:h-10 mx-auto mb-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21a9 9 0 110-18 9 9 0 010 18z"></path></svg>' },
             { id: 'troquelado', name: 'Troquelado', multiplier: 1.3, icon: '<svg class="w-8 h-8 md:w-10 md:h-10 mx-auto mb-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>' }
