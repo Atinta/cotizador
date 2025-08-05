@@ -73,7 +73,7 @@
 </head>
 <body>
 
-<div class="sofia-morales-cotizador">
+<div id="cotizador-container" class="sofia-morales-cotizador">
     <div class="bg-white p-4 md:p-8 rounded-2xl shadow-xl max-w-5xl mx-auto">
         <div class="text-center mb-8 md:mb-10">
             <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">Crea tu Sticker Perfecto</h2>
@@ -85,9 +85,9 @@
             <input type="hidden" name="_next" value="https://www.stickersatinta.com/gracias">
             <input type="hidden" name="_captcha" value="false">
 
-            <div class="flex flex-col lg:flex-row gap-10 lg:gap-16">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
                 
-                <div class="lg:w-1/2 space-y-6">
+                <div class="space-y-6">
                     <div id="step-1">
                         <label class="font-bold text-lg text-gray-800 block mb-3">1. Elige la Forma</label>
                         <div id="shape-options" class="grid grid-cols-3 gap-2 md:gap-4"></div>
@@ -126,37 +126,35 @@
                     </div>
                 </div>
 
-                <div class="lg:w-1/2">
-                    <div class="lg:sticky top-8">
-                        <div id="summary-card" class="bg-gray-50 rounded-lg p-6">
-                            <h3 class="text-xl font-bold mb-4">Resumen de Cotización</h3>
-                            <div id="price-summary-container" class="space-y-3 text-gray-600 mb-6" aria-live="polite">
-                                <div class="flex justify-between"><span>Forma:</span> <span id="summary-shape" class="font-semibold">--</span></div>
-                                <div class="flex justify-between"><span>Tamaño:</span> <span id="summary-size" class="font-semibold">--</span></div>
-                                <div class="flex justify-between"><span>Material:</span> <span id="summary-material" class="font-semibold">--</span></div>
-                                <div class="flex justify-between"><span>Cantidad:</span> <span id="summary-quantity" class="font-semibold">--</span></div>
+                <div class="lg:sticky top-8 h-fit">
+                    <div id="summary-card" class="bg-gray-50 rounded-lg p-6">
+                        <h3 class="text-xl font-bold mb-4">Resumen de Cotización</h3>
+                        <div id="price-summary-container" class="space-y-3 text-gray-600 mb-6" aria-live="polite">
+                            <div class="flex justify-between"><span>Forma:</span> <span id="summary-shape" class="font-semibold">--</span></div>
+                            <div class="flex justify-between"><span>Tamaño:</span> <span id="summary-size" class="font-semibold">--</span></div>
+                            <div class="flex justify-between"><span>Material:</span> <span id="summary-material" class="font-semibold">--</span></div>
+                            <div class="flex justify-between"><span>Cantidad:</span> <span id="summary-quantity" class="font-semibold">--</span></div>
+                        </div>
+                        <div class="border-t border-gray-300 pt-4 mb-6 space-y-2">
+                            <div class="flex justify-between items-center"><span class="text-md text-gray-600">Valor Unitario (Neto):</span><span id="unit-price" class="text-md font-semibold text-gray-800">$0</span></div>
+                            <div class="flex justify-between items-center"><span class="text-md text-gray-600">Valor Neto:</span><span id="net-price" class="text-md font-semibold text-gray-800">$0</span></div>
+                            <div class="flex justify-between items-center"><span class="text-md text-gray-600">IVA (19%):</span><span id="iva-price" class="text-md font-semibold text-gray-800">$0</span></div>
+                            <div id="total-price-wrapper" class="flex justify-between items-center mt-2 pt-2 border-t border-dashed rounded-md -mx-2 px-2"><span class="text-lg font-bold">Total a Pagar:</span><span id="total-price" class="text-2xl md:text-3xl font-black action-text">$0</span></div>
+                        </div>
+                         <div id="contact-details" class="border-t border-gray-300 pt-4 space-y-4">
+                            <h3 class="font-bold text-lg text-gray-800">Tus Datos para Enviar</h3>
+                            <div>
+                                <label for="name" class="text-sm font-medium text-gray-700">Nombre</label>
+                                <input type="text" id="name" name="name" required class="form-input mt-1 block w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             </div>
-                            <div class="border-t border-gray-300 pt-4 mb-6 space-y-2">
-                                <div class="flex justify-between items-center"><span class="text-md text-gray-600">Valor Unitario (Neto):</span><span id="unit-price" class="text-md font-semibold text-gray-800">$0</span></div>
-                                <div class="flex justify-between items-center"><span class="text-md text-gray-600">Valor Neto:</span><span id="net-price" class="text-md font-semibold text-gray-800">$0</span></div>
-                                <div class="flex justify-between items-center"><span class="text-md text-gray-600">IVA (19%):</span><span id="iva-price" class="text-md font-semibold text-gray-800">$0</span></div>
-                                <div id="total-price-wrapper" class="flex justify-between items-center mt-2 pt-2 border-t border-dashed rounded-md -mx-2 px-2"><span class="text-lg font-bold">Total a Pagar:</span><span id="total-price" class="text-2xl md:text-3xl font-black action-text">$0</span></div>
+                             <div>
+                                <label for="email" class="text-sm font-medium text-gray-700">Email</label>
+                                <input type="email" id="email" name="email" required class="form-input mt-1 block w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             </div>
-                             <div id="contact-details" class="border-t border-gray-300 pt-4 space-y-4">
-                                <h3 class="font-bold text-lg text-gray-800">Tus Datos para Enviar</h3>
-                                <div>
-                                    <label for="name" class="text-sm font-medium text-gray-700">Nombre</label>
-                                    <input type="text" id="name" name="name" required class="form-input mt-1 block w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                </div>
-                                 <div>
-                                    <label for="email" class="text-sm font-medium text-gray-700">Email</label>
-                                    <input type="email" id="email" name="email" required class="form-input mt-1 block w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                </div>
-                                <button id="submit-button" type="submit" class="w-full py-3 text-lg font-bold text-white action-bg rounded-lg shadow-md hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center">
-                                    <span id="submit-button-text">Enviar Cotización</span>
-                                    <div id="submit-spinner" class="spinner hidden"></div>
-                                </button>
-                            </div>
+                            <button id="submit-button" type="submit" class="w-full py-3 text-lg font-bold text-white action-bg rounded-lg shadow-md hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center">
+                                <span id="submit-button-text">Enviar Cotización</span>
+                                <div id="submit-spinner" class="spinner hidden"></div>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -216,6 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     const state = { shape: null, width: null, height: null, material: null, finish: null, quantity: null, roundedCorners: false, touched: { width: false, height: false, quantity: false } };
     const dom = {
+        container: document.querySelector('#cotizador-container'),
         shapeOptions: document.querySelector('#shape-options'),
         roundedCornersContainer: document.querySelector('#rounded-corners-container'),
         roundedCornersCheckbox: document.querySelector('#rounded-corners-checkbox'),
@@ -237,7 +236,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const scrollToElement = (element) => {
         if (window.innerWidth < 1024) { 
             setTimeout(() => {
-                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                const yOffset = -80; 
+                const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                window.scrollTo({top: y, behavior: 'smooth'});
             }, 300);
         }
     };
@@ -410,6 +411,21 @@ document.addEventListener('DOMContentLoaded', () => {
         ui.update();
     }
     main();
+
+    // SCRIPT DE AUTO-RESIZE PARA ELIMINAR DOBLE SCROLL
+    const sendHeight = () => {
+        const height = document.getElementById('cotizador-container').offsetHeight;
+        window.parent.postMessage({ type: 'resize', height: height + 30 }, '*');
+    };
+
+    // Enviar altura al cargar y al cambiar tamaño de la ventana
+    window.addEventListener('load', sendHeight);
+    window.addEventListener('resize', sendHeight);
+
+    // Usar ResizeObserver para detectar cambios en el contenido (más robusto)
+    const observer = new ResizeObserver(sendHeight);
+    observer.observe(dom.container);
+
 });
 </script>
 
