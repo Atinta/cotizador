@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
+        html { scroll-behavior: smooth; }
         body { 
             margin: 0; 
             padding: 0; 
@@ -55,12 +56,21 @@
             animation: spin 1s ease-in-out infinite; 
         }
         @keyframes spin { to { transform: rotate(360deg); } }
+        /* MEJORA UX: Animación de feedback de precio más notoria */
         @keyframes price-update-glow { 
             0% { background-color: transparent; } 
-            50% { background-color: #e0f0ff; } 
+            40% { background-color: #dbeafe; box-shadow: 0 0 12px #bfdbfe; } 
             100% { background-color: transparent; } 
         }
-        .sofia-morales-cotizador .price-updated { animation: price-update-glow 0.7s ease-out; }
+        .sofia-morales-cotizador .price-updated { animation: price-update-glow 0.8s ease-out; }
+        /* MEJORA UX: Animación para el botón de enviar "inteligente" */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        .sofia-morales-cotizador .ready-to-submit {
+            animation: pulse 2s infinite;
+        }
     </style>
 </head>
 <body>
@@ -77,12 +87,10 @@
             <input type="hidden" name="_next" value="https://www.stickersatinta.com/gracias">
             <input type="hidden" name="_captcha" value="false">
 
-            <!-- LAYOUT MÓVIL: Las columnas ahora se apilan verticalmente en móvil y pasan a 2 columnas en desktop -->
             <div class="flex flex-col lg:flex-row gap-10">
                 
-                <!-- Columna de Configuración -->
                 <div class="lg:w-1/2 space-y-6">
-                    <div>
+                    <div id="step-1">
                         <label class="font-bold text-lg text-gray-800 block mb-3">1. Elige la Forma</label>
                         <div id="shape-options" class="grid grid-cols-3 gap-2 md:gap-4"></div>
                         <div id="rounded-corners-container" class="collapsible-content hidden mt-4">
@@ -92,20 +100,22 @@
                             </label>
                         </div>
                     </div>
-                    <div>
+                    <div id="step-2">
                         <label class="font-bold text-lg text-gray-800 block mb-3">2. Ingresa las Dimensiones (cm)</label>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <input id="width" type="number" placeholder="Ancho" class="form-input w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" aria-label="Ancho en centímetros">
+                                <!-- MEJORA UX: Teclado numérico en móviles -->
+                                <input id="width" type="number" inputmode="decimal" placeholder="Ancho" class="form-input w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" aria-label="Ancho en centímetros">
                                 <p id="width-error" class="error-message hidden text-red-500 text-sm mt-1"></p>
                             </div>
                             <div>
-                                <input id="height" type="number" placeholder="Alto" class="form-input w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" aria-label="Alto en centímetros">
+                                <!-- MEJORA UX: Teclado numérico en móviles -->
+                                <input id="height" type="number" inputmode="decimal" placeholder="Alto" class="form-input w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" aria-label="Alto en centímetros">
                                 <p id="height-error" class="error-message hidden text-red-500 text-sm mt-1"></p>
                             </div>
                         </div>
                     </div>
-                    <div>
+                    <div id="step-3">
                         <label class="font-bold text-lg text-gray-800 block mb-3">3. Elige el Material</label>
                         <div id="material-options" class="space-y-3"></div>
                         <div id="finish-options-container" class="collapsible-content hidden mt-4">
@@ -113,16 +123,16 @@
                              <div id="finish-options" class="grid grid-cols-2 gap-4"></div>
                         </div>
                     </div>
-                    <div>
+                    <div id="step-4">
                         <label for="quantity" class="font-bold text-lg text-gray-800 block mb-3">4. Ingresa la Cantidad</label>
-                        <input id="quantity" type="number" class="form-input w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Ej: 1500" aria-label="Cantidad de stickers">
+                        <!-- MEJORA UX: Teclado numérico en móviles -->
+                        <input id="quantity" type="number" inputmode="decimal" class="form-input w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Ej: 1500" aria-label="Cantidad de stickers">
                         <p id="quantity-error" class="error-message hidden text-red-500 text-sm mt-1"></p>
                     </div>
                 </div>
 
-                <!-- Columna de Resumen y Envío -->
                 <div class="lg:w-1/2">
-                    <div class="bg-gray-50 rounded-lg p-6 h-fit">
+                    <div id="summary-card" class="bg-gray-50 rounded-lg p-6 h-fit">
                         <h3 class="text-xl font-bold mb-4">Resumen de Cotización</h3>
                         <div id="price-summary-container" class="space-y-3 text-gray-600 mb-6" aria-live="polite">
                             <div class="flex justify-between"><span>Forma:</span> <span id="summary-shape" class="font-semibold">--</span></div>
@@ -136,7 +146,7 @@
                             <div class="flex justify-between items-center"><span class="text-md text-gray-600">IVA (19%):</span><span id="iva-price" class="text-md font-semibold text-gray-800">$0</span></div>
                             <div id="total-price-wrapper" class="flex justify-between items-center mt-2 pt-2 border-t border-dashed rounded-md -mx-2 px-2"><span class="text-lg font-bold">Total a Pagar:</span><span id="total-price" class="text-2xl md:text-3xl font-black action-text">$0</span></div>
                         </div>
-                         <div class="border-t border-gray-300 pt-4 space-y-4">
+                         <div id="contact-details" class="border-t border-gray-300 pt-4 space-y-4">
                             <h3 class="font-bold text-lg text-gray-800">Tus Datos para Enviar</h3>
                             <div>
                                 <label for="name" class="text-sm font-medium text-gray-700">Nombre</label>
@@ -146,7 +156,7 @@
                                 <label for="email" class="text-sm font-medium text-gray-700">Email</label>
                                 <input type="email" id="email" name="email" required class="form-input mt-1 block w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             </div>
-                            <button id="submit-button" type="submit" class="w-full py-3 text-lg font-bold text-white action-bg rounded-lg shadow-md hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center">
+                            <button id="submit-button" type="submit" class="w-full py-3 text-lg font-bold text-white action-bg rounded-lg shadow-md hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center">
                                 <span id="submit-button-text">Enviar Cotización</span>
                                 <div id="submit-spinner" class="spinner hidden"></div>
                             </button>
@@ -209,7 +219,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     const state = { shape: null, width: null, height: null, material: null, finish: null, quantity: null, roundedCorners: false, touched: { width: false, height: false, quantity: false } };
     const dom = {
-        cotizador: document.querySelector('.sofia-morales-cotizador'),
         shapeOptions: document.querySelector('#shape-options'),
         roundedCornersContainer: document.querySelector('#rounded-corners-container'),
         roundedCornersCheckbox: document.querySelector('#rounded-corners-checkbox'),
@@ -219,8 +228,24 @@ document.addEventListener('DOMContentLoaded', () => {
         inputs: { width: document.querySelector('#width'), height: document.querySelector('#height'), quantity: document.querySelector('#quantity') },
         errors: { width: document.querySelector('#width-error'), height: document.querySelector('#height-error'), quantity: document.querySelector('#quantity-error') },
         summary: { shape: document.querySelector('#summary-shape'), size: document.querySelector('#summary-size'), material: document.querySelector('#summary-material'), quantity: document.querySelector('#summary-quantity'), unitPrice: document.querySelector('#unit-price'), netPrice: document.querySelector('#net-price'), ivaPrice: document.querySelector('#iva-price'), totalPrice: document.querySelector('#total-price'), totalPriceWrapper: document.querySelector('#total-price-wrapper') },
-        submitButton: document.querySelector('#submit-button')
+        submitButton: document.querySelector('#submit-button'),
+        steps: {
+            step2: document.querySelector('#step-2'),
+            step3: document.querySelector('#step-3'),
+            step4: document.querySelector('#step-4'),
+            contact: document.querySelector('#contact-details')
+        }
     };
+
+    // MEJORA UX: Función de Auto-Scroll
+    const scrollToElement = (element) => {
+        if (window.innerWidth < 1024) { // Solo se activa en pantallas de tipo móvil/tablet
+            setTimeout(() => {
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 300);
+        }
+    };
+
     const calculator = {
         getBaseConfig: () => {
             const { shape, width, height, material, finish } = state;
@@ -297,6 +322,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 dom.summary.totalPriceWrapper.classList.add('price-updated');
             }
             dom.submitButton.disabled = !isValid;
+            // MEJORA UX: Botón de envío "inteligente"
+            dom.submitButton.classList.toggle('ready-to-submit', isValid);
         },
         validateInput: (input, errorEl, touchedFlag) => {
             if (!touchedFlag) return true;
@@ -326,8 +353,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 state.shape = button.dataset.shape;
                 dom.shapeOptions.querySelectorAll('button').forEach(btn => btn.classList.remove('selected-option'));
                 button.classList.add('selected-option');
-                dom.roundedCornersContainer.classList.toggle('hidden', state.shape !== 'rectangular');
-                if (state.shape !== 'rectangular') {
+                const showCorners = state.shape === 'rectangular';
+                dom.roundedCornersContainer.classList.toggle('hidden', !showCorners);
+                if (!showCorners) {
                     state.roundedCorners = false;
                     dom.roundedCornersCheckbox.checked = false;
                 }
@@ -339,6 +367,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     dom.inputs.height.disabled = false;
                 }
                 ui.update();
+                // MEJORA UX: Auto-Scroll
+                scrollToElement(dom.steps.step2);
             });
             dom.roundedCornersCheckbox.addEventListener('change', e => {
                 state.roundedCorners = e.target.checked;
@@ -355,6 +385,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     dom.finishOptionsContainer.classList.remove('hidden');
                 }
                 ui.update();
+                // MEJORA UX: Auto-Scroll
+                scrollToElement(dom.finishOptionsContainer);
             });
             dom.finishOptions.addEventListener('click', e => {
                 const button = e.target.closest('button'); if (!button) return;
@@ -372,12 +404,15 @@ document.addEventListener('DOMContentLoaded', () => {
                         state.height = state.width;
                     }
                     ui.update();
+                    if (key === 'quantity' && e.target.value.length > 3) {
+                        // MEJORA UX: Auto-Scroll
+                        scrollToElement(dom.steps.contact);
+                    }
                 });
             });
         }
     };
     function main() {
-        if (!dom.cotizador) return;
         ui.renderOptions();
         events.bind();
         ui.update();
