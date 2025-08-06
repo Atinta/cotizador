@@ -9,36 +9,18 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { 
-            margin: 0; padding: 0; background-color: transparent; 
-        }
-        .sofia-morales-cotizador { 
-            font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
-        }
+        body { margin: 0; padding: 0; background-color: transparent; }
+        .sofia-morales-cotizador { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
         .sofia-morales-cotizador .action-bg { background-color: #E5007E; }
         .sofia-morales-cotizador .action-text { color: #E5007E; }
-        .sofia-morales-cotizador .selected-option { 
-            border-color: #E5007E; box-shadow: 0 0 0 2px #E5007E; transform: scale(1.02); 
-        }
+        .sofia-morales-cotizador .selected-option { border-color: #E5007E; box-shadow: 0 0 0 2px #E5007E; transform: scale(1.02); }
         .sofia-morales-cotizador .option-button, .sofia-morales-cotizador .form-input { transition: all 0.2s ease-in-out; }
-        .sofia-morales-cotizador .form-input.invalid { 
-            border-color: #EF4444; box-shadow: 0 0 0 2px #FECACA; 
-        }
-        .sofia-morales-cotizador .collapsible-content.hidden, .sofia-morales-cotizador .error-message.hidden { 
-            opacity: 0; max-height: 0; margin-top: 0; overflow: hidden; transition: all 0.3s ease-out; 
-        }
-        .sofia-morales-cotizador .collapsible-content, .sofia-morales-cotizador .error-message { 
-            opacity: 1; max-height: 2000px; transition: all 0.3s ease-in; 
-        }
-        .sofia-morales-cotizador .spinner { 
-            border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 50%; border-top-color: #fff; width: 16px; height: 16px; animation: spin 1s ease-in-out infinite; 
-        }
+        .sofia-morales-cotizador .form-input.invalid { border-color: #EF4444; box-shadow: 0 0 0 2px #FECACA; }
+        .sofia-morales-cotizador .collapsible-content.hidden, .sofia-morales-cotizador .error-message.hidden { opacity: 0; max-height: 0; margin-top: 0; overflow: hidden; transition: all 0.3s ease-out; }
+        .sofia-morales-cotizador .collapsible-content, .sofia-morales-cotizador .error-message { opacity: 1; max-height: 2000px; transition: all 0.3s ease-in; }
+        .sofia-morales-cotizador .spinner { border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 50%; border-top-color: #fff; width: 16px; height: 16px; animation: spin 1s ease-in-out infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes price-update-glow { 
-            0% { background-color: transparent; } 
-            40% { background-color: #fce7f3; box-shadow: 0 0 12px #fbcfe8; } 
-            100% { background-color: transparent; } 
-        }
+        @keyframes price-update-glow { 0% { background-color: transparent; } 40% { background-color: #fce7f3; box-shadow: 0 0 12px #fbcfe8; } 100% { background-color: transparent; } }
         .sofia-morales-cotizador .price-updated { animation: price-update-glow 0.8s ease-out; }
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
         .sofia-morales-cotizador .ready-to-submit { animation: pulse 2s infinite; }
@@ -194,6 +176,18 @@ document.addEventListener('DOMContentLoaded', () => {
         submitButton: document.querySelector('#submit-button')
     };
 
+    // --- NUEVO CÓDIGO DE ANALÍTICA ---
+    let hasInteracted = false;
+    function sendGAEvent(eventName) {
+        window.parent.postMessage({ event: eventName }, 'https://www.stickersatinta.com');
+    }
+    // --- FIN NUEVO CÓDIGO DE ANALÍTICA ---
+
+    function sendHeight() {
+        const height = document.querySelector('.sofia-morales-cotizador').offsetHeight;
+        window.parent.postMessage({ frameHeight: height }, 'https://www.stickersatinta.com');
+    }
+
     const calculator = {
         getBaseConfig: () => {
             const { shape, width, height, material, finish } = state;
@@ -250,6 +244,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const baseConfig = calculator.getBaseConfig();
             const { netPrice, unitPrice } = state.quantity ? calculator.forQuantity(state.quantity, baseConfig, CONFIG.priceTiers) : { netPrice: 0, unitPrice: 0 };
             const isValid = netPrice > 0 && state.quantity >= CONFIG.minimumQuantity && state.quantity <= CONFIG.maximumQuantity;
+            
+            if (isValid) {
+                // ANÁLITICA: Dispara el evento cuando se calcula un precio válido
+                sendGAEvent('cotizador_precio_calculado');
+            }
+
             let shapeName = state.shape ? CONFIG.shapes.find(s=>s.id===state.shape).name : '--';
             if (state.shape === 'rectangular' && state.roundedCorners) { shapeName = 'Rect. Redondeado'; } 
             else if (state.shape === 'circular' && state.width !== state.height) { shapeName = 'Óvalo'; }
@@ -295,16 +295,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // FUNCIÓN NUEVA: Para medir y enviar la altura
-    function sendHeight() {
-        const height = document.querySelector('.sofia-morales-cotizador').offsetHeight;
-        window.parent.postMessage({ frameHeight: height }, 'https://www.stickersatinta.com');
-    }
-
     const events = {
         bind: () => {
+            // ANÁLITICA: Listener para el envío del formulario
+            document.getElementById('cotizador-form').addEventListener('submit', () => {
+                sendGAEvent('cotizador_formulario_enviado');
+            });
+            
             dom.shapeOptions.addEventListener('click', e => {
                 const button = e.target.closest('button'); if (!button) return;
+                if (!hasInteracted) { sendGAEvent('cotizador_interaccion'); hasInteracted = true; }
                 state.shape = button.dataset.shape;
                 dom.shapeOptions.querySelectorAll('button').forEach(btn => btn.classList.remove('selected-option'));
                 button.classList.add('selected-option');
@@ -324,11 +324,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 ui.update();
             });
             dom.roundedCornersCheckbox.addEventListener('change', e => {
+                if (!hasInteracted) { sendGAEvent('cotizador_interaccion'); hasInteracted = true; }
                 state.roundedCorners = e.target.checked;
                 ui.update();
             });
             dom.materialOptions.addEventListener('click', e => {
                 const button = e.target.closest('button'); if (!button) return;
+                if (!hasInteracted) { sendGAEvent('cotizador_interaccion'); hasInteracted = true; }
                 state.material = button.dataset.material; state.finish = null;
                 dom.materialOptions.querySelectorAll('button').forEach(btn => btn.classList.remove('selected-option'));
                 button.classList.add('selected-option');
@@ -341,6 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             dom.finishOptions.addEventListener('click', e => {
                 const button = e.target.closest('button'); if (!button) return;
+                if (!hasInteracted) { sendGAEvent('cotizador_interaccion'); hasInteracted = true; }
                 state.finish = button.dataset.finish;
                 dom.finishOptions.querySelectorAll('button').forEach(btn => btn.classList.remove('selected-option'));
                 button.classList.add('selected-option');
@@ -348,6 +351,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             Object.keys(dom.inputs).forEach(key => {
                 dom.inputs[key].addEventListener('input', e => {
+                    if (!hasInteracted) { sendGAEvent('cotizador_interaccion'); hasInteracted = true; }
                     state.touched[key] = true;
                     state[key] = parseFloat(e.target.value) || null;
                     if (key === 'width' && state.shape === 'circular') {
@@ -358,7 +362,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             });
 
-            // CÓDIGO AÑADIDO: Observador para la altura dinámica
+            // Observador para la altura dinámica
             const resizeObserver = new ResizeObserver(() => sendHeight());
             resizeObserver.observe(document.querySelector('.sofia-morales-cotizador'));
         }
@@ -368,7 +372,6 @@ document.addEventListener('DOMContentLoaded', () => {
         ui.renderOptions();
         events.bind();
         ui.update();
-        // CÓDIGO AÑADIDO: Envía la altura inicial al cargar
         sendHeight(); 
     }
     
