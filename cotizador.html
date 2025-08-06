@@ -295,6 +295,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // FUNCIÓN NUEVA: Para medir y enviar la altura
+    function sendHeight() {
+        const height = document.querySelector('.sofia-morales-cotizador').offsetHeight;
+        window.parent.postMessage({ frameHeight: height }, 'https://www.stickersatinta.com');
+    }
+
     const events = {
         bind: () => {
             dom.shapeOptions.addEventListener('click', e => {
@@ -351,6 +357,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     ui.update();
                 });
             });
+
+            // CÓDIGO AÑADIDO: Observador para la altura dinámica
+            const resizeObserver = new ResizeObserver(() => sendHeight());
+            resizeObserver.observe(document.querySelector('.sofia-morales-cotizador'));
         }
     };
 
@@ -358,6 +368,8 @@ document.addEventListener('DOMContentLoaded', () => {
         ui.renderOptions();
         events.bind();
         ui.update();
+        // CÓDIGO AÑADIDO: Envía la altura inicial al cargar
+        sendHeight(); 
     }
     
     main();
