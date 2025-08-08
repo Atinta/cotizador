@@ -37,12 +37,13 @@
         
         <form id="cotizador-form" action="https://formspree.io/f/xkgzzrkw" method="POST" enctype="multipart/form-data">
             
+            <input type="hidden" name="_next" value="https://www.stickersatinta.com/gracias">
+            <input type="hidden" name="_captcha" value="false">
             <input type="hidden" name="Forma" id="hidden-shape">
             <input type="hidden" name="Bordes_Redondeados" id="hidden-rounded-corners">
             <input type="hidden" name="Material" id="hidden-material">
             <input type="hidden" name="Acabado" id="hidden-finish">
             <input type="hidden" name="Valor_Total_Calculado" id="hidden-total-price">
-            <input type="hidden" name="_captcha" value="false">
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
                 
@@ -169,6 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const state = { shape: null, width: null, height: null, material: null, finish: null, quantity: null, roundedCorners: false, touched: { width: false, height: false, quantity: false } };
 
     const dom = {
+        form: document.querySelector('#cotizador-form'), // NUEVO
         shapeOptions: document.querySelector('#shape-options'),
         roundedCornersContainer: document.querySelector('#rounded-corners-container'),
         roundedCornersCheckbox: document.querySelector('#rounded-corners-checkbox'),
@@ -176,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
         finishOptionsContainer: document.querySelector('#finish-options-container'),
         finishOptions: document.querySelector('#finish-options'),
         inputs: { width: document.querySelector('#width'), height: document.querySelector('#height'), quantity: document.querySelector('#quantity') },
-        hiddenInputs: { // NUEVO: Referencia a los campos ocultos
+        hiddenInputs: {
             shape: document.querySelector('#hidden-shape'),
             roundedCorners: document.querySelector('#hidden-rounded-corners'),
             material: document.querySelector('#hidden-material'),
@@ -188,12 +190,10 @@ document.addEventListener('DOMContentLoaded', () => {
         submitButton: document.querySelector('#submit-button')
     };
 
-    // --- NUEVO CÓDIGO DE ANALÍTICA ---
     let hasInteracted = false;
     function sendGAEvent(eventName) {
         window.parent.postMessage({ event: eventName }, 'https://www.stickersatinta.com');
     }
-    // --- FIN NUEVO CÓDIGO DE ANALÍTICA ---
 
     function sendHeight() {
         const height = document.querySelector('.sofia-morales-cotizador').offsetHeight;
@@ -258,7 +258,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const isValid = netPrice > 0 && state.quantity >= CONFIG.minimumQuantity && state.quantity <= CONFIG.maximumQuantity;
             
             if (isValid) {
-                // ANÁLITICA: Dispara el evento cuando se calcula un precio válido
                 sendGAEvent('cotizador_precio_calculado');
             }
 
@@ -280,14 +279,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const totalPriceFormatted = `$${Math.round(totalPrice).toLocaleString('es-CL')}`;
             dom.summary.totalPrice.textContent = totalPriceFormatted;
 
-            // --- NUEVO: Actualizar campos ocultos para el envío ---
-            dom.hiddenInputs.shape.value = shapeName;
-            dom.hiddenInputs.roundedCorners.value = state.roundedCorners ? 'Sí' : 'No';
-            dom.hiddenInputs.material.value = fullMaterialName;
-            dom.hiddenInputs.finish.value = state.finish ? mat.finishes[state.finish].name : 'N/A';
-            dom.hiddenInputs.totalPrice.value = totalPriceFormatted;
-            // --- FIN NUEVO ---
-            
             if (isValid) {
                 dom.summary.totalPriceWrapper.classList.remove('price-updated');
                 void dom.summary.totalPriceWrapper.offsetWidth;
@@ -295,6 +286,25 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             dom.submitButton.disabled = !isValid;
             dom.submitButton.classList.toggle('ready-to-submit', isValid);
+        },
+        updateHiddenFields: () => { // NUEVO
+            const mat = CONFIG.materialOptions.find(m => m.id === state.material);
+            let shapeName = state.shape ? CONFIG.shapes.find(s => s.id === state.shape).name : '';
+            if (state.shape === 'rectangular' && state.roundedCorners) { shapeName = 'Rect. Redondeado'; }
+            else if (state.shape === 'circular' && state.width !== state.height) { shapeName = 'Óvalo'; }
+            
+            dom.hiddenInputs.shape.value = String(shapeName || '');
+            dom.hiddenInputs.roundedCorners.value = state.roundedCorners ? 'Sí' : 'No';
+            dom.hiddenInputs.material.value = String(mat ? mat.name : '');
+            dom.hiddenInputs.finish.value = String(state.finish && mat ? mat.finishes[state.finish].name : '');
+            dom.hiddenInputs.totalPrice.value = String(dom.summary.totalPrice.textContent || '');
+
+            console.log("--- VALORES A ENVIAR ---");
+            console.log("Forma:", dom.hiddenInputs.shape.value);
+            console.log("Material:", dom.hiddenInputs.material.value);
+            console.log("Acabado:", dom.hiddenInputs.finish.value);
+            console.log("Total:", dom.hiddenInputs.totalPrice.value);
+            console.log("------------------------");
         },
         validateInput: (input, errorEl, touchedFlag) => {
             if (!touchedFlag) return true;
@@ -320,8 +330,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const events = {
         bind: () => {
-            // ANÁLITICA: Listener para el envío del formulario
-            document.getElementById('cotizador-form').addEventListener('submit', () => {
+            dom.form.addEventListener('submit', (event) => { // MODIFICADO
+                // Llama a la función para actualizar los campos ocultos JUSTO ANTES de enviar.
+                ui.updateHiddenFields();
                 sendGAEvent('cotizador_formulario_enviado');
             });
             
@@ -385,7 +396,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             });
 
-            // Observador para la altura dinámica
             const resizeObserver = new ResizeObserver(() => sendHeight());
             resizeObserver.observe(document.querySelector('.sofia-morales-cotizador'));
         }
