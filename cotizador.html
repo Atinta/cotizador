@@ -36,7 +36,12 @@
         </div>
         
         <form id="cotizador-form" action="https://formspree.io/f/xkgzzrkw" method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="_next" value="https://www.stickersatinta.com/gracias">
+            
+            <input type="hidden" name="Forma" id="hidden-shape">
+            <input type="hidden" name="Bordes_Redondeados" id="hidden-rounded-corners">
+            <input type="hidden" name="Material" id="hidden-material">
+            <input type="hidden" name="Acabado" id="hidden-finish">
+            <input type="hidden" name="Valor_Total_Calculado" id="hidden-total-price">
             <input type="hidden" name="_captcha" value="false">
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
@@ -55,21 +60,21 @@
                     <div>
                         <label class="font-bold text-lg text-gray-800 block mb-3">2. Ingresa las Dimensiones (cm)</label>
                         <div class="grid grid-cols-2 gap-4">
-                            <div><input id="width" type="number" inputmode="decimal" placeholder="Ancho" class="form-input w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500" aria-label="Ancho en centímetros"><p id="width-error" class="error-message hidden text-red-500 text-sm mt-1"></p></div>
-                            <div><input id="height" type="number" inputmode="decimal" placeholder="Alto" class="form-input w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500" aria-label="Alto en centímetros"><p id="height-error" class="error-message hidden text-red-500 text-sm mt-1"></p></div>
+                            <div><input id="width" name="Ancho_(cm)" type="number" inputmode="decimal" placeholder="Ancho" class="form-input w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500" aria-label="Ancho en centímetros"><p id="width-error" class="error-message hidden text-red-500 text-sm mt-1"></p></div>
+                            <div><input id="height" name="Alto_(cm)" type="number" inputmode="decimal" placeholder="Alto" class="form-input w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500" aria-label="Alto en centímetros"><p id="height-error" class="error-message hidden text-red-500 text-sm mt-1"></p></div>
                         </div>
                     </div>
                     <div>
                         <label class="font-bold text-lg text-gray-800 block mb-3">3. Elige el Material</label>
                         <div id="material-options" class="space-y-3"></div>
                         <div id="finish-options-container" class="collapsible-content hidden mt-4">
-                             <label class="font-bold text-md text-gray-700 block mb-2">3a. Elige el Acabado</label>
-                             <div id="finish-options" class="grid grid-cols-2 gap-4"></div>
+                                <label class="font-bold text-md text-gray-700 block mb-2">3a. Elige el Acabado</label>
+                                <div id="finish-options" class="grid grid-cols-2 gap-4"></div>
                         </div>
                     </div>
                     <div>
                         <label for="quantity" class="font-bold text-lg text-gray-800 block mb-3">4. Ingresa la Cantidad</label>
-                        <input id="quantity" type="number" inputmode="decimal" class="form-input w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500" placeholder="Ej: 1500" aria-label="Cantidad de stickers">
+                        <input id="quantity" name="Cantidad" type="number" inputmode="decimal" class="form-input w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500" placeholder="Ej: 1500" aria-label="Cantidad de stickers">
                         <p id="quantity-error" class="error-message hidden text-red-500 text-sm mt-1"></p>
                     </div>
                 </div>
@@ -171,6 +176,13 @@ document.addEventListener('DOMContentLoaded', () => {
         finishOptionsContainer: document.querySelector('#finish-options-container'),
         finishOptions: document.querySelector('#finish-options'),
         inputs: { width: document.querySelector('#width'), height: document.querySelector('#height'), quantity: document.querySelector('#quantity') },
+        hiddenInputs: { // NUEVO: Referencia a los campos ocultos
+            shape: document.querySelector('#hidden-shape'),
+            roundedCorners: document.querySelector('#hidden-rounded-corners'),
+            material: document.querySelector('#hidden-material'),
+            finish: document.querySelector('#hidden-finish'),
+            totalPrice: document.querySelector('#hidden-total-price')
+        },
         errors: { width: document.querySelector('#width-error'), height: document.querySelector('#height-error'), quantity: document.querySelector('#quantity-error') },
         summary: { shape: document.querySelector('#summary-shape'), size: document.querySelector('#summary-size'), material: document.querySelector('#summary-material'), quantity: document.querySelector('#summary-quantity'), unitPrice: document.querySelector('#unit-price'), netPrice: document.querySelector('#net-price'), ivaPrice: document.querySelector('#iva-price'), totalPrice: document.querySelector('#total-price'), totalPriceWrapper: document.querySelector('#total-price-wrapper') },
         submitButton: document.querySelector('#submit-button')
@@ -256,7 +268,8 @@ document.addEventListener('DOMContentLoaded', () => {
             dom.summary.shape.textContent = shapeName;
             dom.summary.size.textContent = (state.width && state.height) ? `${state.width} x ${state.height} cm` : '--';
             const mat = CONFIG.materialOptions.find(m=>m.id===state.material);
-            dom.summary.material.textContent = mat ? `${mat.name} ${state.finish ? `(${mat.finishes[state.finish].name})` : ''}` : '--';
+            const fullMaterialName = mat ? `${mat.name} ${state.finish ? `(${mat.finishes[state.finish].name})` : ''}` : '--';
+            dom.summary.material.textContent = fullMaterialName;
             dom.summary.quantity.textContent = state.quantity ? `${state.quantity} u.` : '--';
             const ivaAmount = Math.round(netPrice * CONFIG.ivaRate);
             const totalPrice = netPrice + ivaAmount;
@@ -264,7 +277,17 @@ document.addEventListener('DOMContentLoaded', () => {
             dom.summary.unitPrice.textContent = `$${unitPrice > 0 ? unitPriceFormatted : '0'}`;
             dom.summary.netPrice.textContent = `$${Math.round(netPrice).toLocaleString('es-CL')}`;
             dom.summary.ivaPrice.textContent = `$${ivaAmount.toLocaleString('es-CL')}`;
-            dom.summary.totalPrice.textContent = `$${Math.round(totalPrice).toLocaleString('es-CL')}`;
+            const totalPriceFormatted = `$${Math.round(totalPrice).toLocaleString('es-CL')}`;
+            dom.summary.totalPrice.textContent = totalPriceFormatted;
+
+            // --- NUEVO: Actualizar campos ocultos para el envío ---
+            dom.hiddenInputs.shape.value = shapeName;
+            dom.hiddenInputs.roundedCorners.value = state.roundedCorners ? 'Sí' : 'No';
+            dom.hiddenInputs.material.value = fullMaterialName;
+            dom.hiddenInputs.finish.value = state.finish ? mat.finishes[state.finish].name : 'N/A';
+            dom.hiddenInputs.totalPrice.value = totalPriceFormatted;
+            // --- FIN NUEVO ---
+            
             if (isValid) {
                 dom.summary.totalPriceWrapper.classList.remove('price-updated');
                 void dom.summary.totalPriceWrapper.offsetWidth;
