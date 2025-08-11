@@ -9,7 +9,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* Estilos para asegurar que el cotizador se vea bien dentro del iframe */
         body { margin: 0; padding: 0; background-color: transparent; }
         .sofia-morales-cotizador { 
             font-family: 'Inter', sans-serif; 
@@ -68,7 +67,6 @@
         </div>
         
         <form id="cotizador-form" action="https://formspree.io/f/xkgzzrkw" method="POST" enctype="multipart/form-data">
-            
             <input type="hidden" name="_next" value="https://www.stickersatinta.com/gracias">
             <input type="hidden" name="_captcha" value="false">
             <input type="hidden" name="Forma" id="hidden-shape">
@@ -76,9 +74,7 @@
             <input type="hidden" name="Material" id="hidden-material">
             <input type="hidden" name="Acabado" id="hidden-finish">
             <input type="hidden" name="Valor_Total_Calculado" id="hidden-total-price">
-
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
-                
                 <div class="space-y-6">
                     <div>
                         <label class="font-bold text-lg text-gray-800 block mb-3">1. Elige la Forma</label>
@@ -111,7 +107,6 @@
                         <p id="quantity-error" class="error-message hidden text-red-500 text-sm mt-1"></p>
                     </div>
                 </div>
-
                 <div class="lg:sticky top-8 h-fit">
                     <div id="summary-card" class="bg-gray-50 rounded-xl p-6">
                         <h3 class="text-xl font-bold mb-4 text-gray-800">Resumen de Cotización</h3>
@@ -181,7 +176,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 { minQuantity: 1000, cost: 50000 }
             ]
         },
-        // ▼▼▼ CURVA DE PRECIOS SINCRONIZADA CON TU PANEL DE ADMIN ▼▼▼
         priceTiers: [
             { minQuantity: 180000, markup: 2.0 },
             { minQuantity: 150000, markup: 2.1 },
@@ -209,9 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: 'vinilo_transparente', name: 'Vinilo Transparente', finishes: { mate: { name: 'Mate', costKey: 'vinilo_transparente_mate' }, brillante: { name: 'Brillante', costKey: 'vinilo_transparente_mate' } } }
         ]
     };
-
     const state = { shape: null, width: null, height: null, material: null, finish: null, quantity: null, roundedCorners: false, touched: { width: false, height: false, quantity: false } };
-
     const dom = {
         form: document.querySelector('#cotizador-form'),
         shapeOptions: document.querySelector('#shape-options'),
@@ -232,21 +224,18 @@ document.addEventListener('DOMContentLoaded', () => {
         summary: { shape: document.querySelector('#summary-shape'), size: document.querySelector('#summary-size'), material: document.querySelector('#summary-material'), quantity: document.querySelector('#summary-quantity'), unitPrice: document.querySelector('#unit-price'), netPrice: document.querySelector('#net-price'), ivaPrice: document.querySelector('#iva-price'), totalPrice: document.querySelector('#total-price'), totalPriceWrapper: document.querySelector('#total-price-wrapper') },
         submitButton: document.querySelector('#submit-button')
     };
-
     let hasInteracted = false;
     function sendGAEvent(eventName) {
         if (window.parent) {
             window.parent.postMessage({ event: eventName }, 'https://www.stickersatinta.com');
         }
     }
-
     function sendHeight() {
         const height = document.querySelector('.sofia-morales-cotizador').offsetHeight;
         if (window.parent) {
             window.parent.postMessage({ frameHeight: height }, 'https://www.stickersatinta.com');
         }
     }
-
     const calculator = {
         getBaseConfig: () => {
             const { shape, width, height, material, finish } = state;
@@ -292,7 +281,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return { netPrice, unitPrice: finalUnitPrice };
         }
     };
-
     const ui = {
         renderOptions: () => {
             dom.shapeOptions.innerHTML = CONFIG.shapes.map(s => `<button type="button" data-shape="${s.id}" class="option-button border-2 border-gray-300 rounded-lg p-2 text-center text-sm md:text-base">${s.icon}<span class="font-semibold">${s.name}</span></button>`).join('');
