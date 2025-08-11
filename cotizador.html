@@ -7,20 +7,52 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
+        /* Estilos para asegurar que el cotizador se vea bien dentro del iframe */
         body { margin: 0; padding: 0; background-color: transparent; }
-        .sofia-morales-cotizador { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        .sofia-morales-cotizador { 
+            font-family: 'Inter', sans-serif; 
+            -webkit-font-smoothing: antialiased; 
+            -moz-osx-font-smoothing: grayscale; 
+            color: #1f2937;
+            box-sizing: border-box;
+        }
+        .sofia-morales-cotizador *, .sofia-morales-cotizador *::before, .sofia-morales-cotizador *::after {
+            box-sizing: border-box;
+        }
         .sofia-morales-cotizador .action-bg { background-color: #E5007E; }
         .sofia-morales-cotizador .action-text { color: #E5007E; }
-        .sofia-morales-cotizador .selected-option { border-color: #E5007E; box-shadow: 0 0 0 2px #E5007E; transform: scale(1.02); }
+        .sofia-morales-cotizador .selected-option { 
+            border-color: #E5007E; 
+            box-shadow: 0 0 0 2px #E5007E; 
+            transform: scale(1.02); 
+        }
         .sofia-morales-cotizador .option-button, .sofia-morales-cotizador .form-input { transition: all 0.2s ease-in-out; }
-        .sofia-morales-cotizador .form-input.invalid { border-color: #EF4444; box-shadow: 0 0 0 2px #FECACA; }
-        .sofia-morales-cotizador .collapsible-content.hidden, .sofia-morales-cotizador .error-message.hidden { opacity: 0; max-height: 0; margin-top: 0; overflow: hidden; transition: all 0.3s ease-out; }
-        .sofia-morales-cotizador .collapsible-content, .sofia-morales-cotizador .error-message { opacity: 1; max-height: 2000px; transition: all 0.3s ease-in; }
-        .sofia-morales-cotizador .spinner { border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 50%; border-top-color: #fff; width: 16px; height: 16px; animation: spin 1s ease-in-out infinite; }
+        .sofia-morales-cotizador .form-input { color: #111827; }
+        .sofia-morales-cotizador .form-input::placeholder { color: #9CA3AF; }
+        .sofia-morales-cotizador .form-input.invalid { 
+            border-color: #EF4444; 
+            box-shadow: 0 0 0 2px #FECACA; 
+        }
+        .sofia-morales-cotizador .collapsible-content.hidden, 
+        .sofia-morales-cotizador .error-message.hidden { 
+            opacity: 0; max-height: 0; margin-top: 0; overflow: hidden; transition: all 0.3s ease-out; 
+        }
+        .sofia-morales-cotizador .collapsible-content, 
+        .sofia-morales-cotizador .error-message { 
+            opacity: 1; max-height: 2000px; transition: all 0.3s ease-in; 
+        }
+        .sofia-morales-cotizador .spinner { 
+            border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 50%; border-top-color: #fff; 
+            width: 16px; height: 16px; animation: spin 1s ease-in-out infinite; 
+        }
         @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes price-update-glow { 0% { background-color: transparent; } 40% { background-color: #fce7f3; box-shadow: 0 0 12px #fbcfe8; } 100% { background-color: transparent; } }
+        @keyframes price-update-glow { 
+            0% { background-color: transparent; } 
+            40% { background-color: #fce7f3; box-shadow: 0 0 12px #fbcfe8; } 
+            100% { background-color: transparent; } 
+        }
         .sofia-morales-cotizador .price-updated { animation: price-update-glow 0.8s ease-out; }
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
         .sofia-morales-cotizador .ready-to-submit { animation: pulse 2s infinite; }
@@ -150,11 +182,11 @@ document.addEventListener('DOMContentLoaded', () => {
             ]
         },
         priceTiers: [
-            { minQuantity: 180000, markup: 2.0 }, { minQuantity: 150000, markup: 2.02 }, { minQuantity: 100000, markup: 2.05 },
-            { minQuantity: 75000,  markup: 2.08 }, { minQuantity: 50000,  markup: 2.11 }, { minQuantity: 30000,  markup: 2.16 },
-            { minQuantity: 20000,  markup: 2.2 }, { minQuantity: 15000,  markup: 2.23 }, { minQuantity: 10000,  markup: 2.26 },
-            { minQuantity: 7500,   markup: 2.29 }, { minQuantity: 5000,   markup: 2.33 },{ minQuantity: 3500,   markup: 2.37 },
-            { minQuantity: 2500,   markup: 2.4 },{ minQuantity: 1500,   markup: 2.46 },{ minQuantity: 1000,   markup: 2.5 }
+            { minQuantity: 180000, markup: 2.0 }, { minQuantity: 150000, markup: 2.1 }, { minQuantity: 100000, markup: 2.2 },
+            { minQuantity: 75000,  markup: 2.3 }, { minQuantity: 50000,  markup: 2.4 }, { minQuantity: 30000,  markup: 2.5 },
+            { minQuantity: 20000,  markup: 2.6 }, { minQuantity: 15000,  markup: 2.8 }, { minQuantity: 10000,  markup: 3.0 },
+            { minQuantity: 7500,   markup: 3.2 }, { minQuantity: 5000,   markup: 3.5 },{ minQuantity: 3500,   markup: 3.8 },
+            { minQuantity: 2500,   markup: 4.2 },{ minQuantity: 1500,   markup: 4.5 },{ minQuantity: 1000,   markup: 5.0 }
         ],
         shapes: [ 
             { id: 'rectangular', name: 'Rectangular', multiplier: 1.0, icon: '<svg class="w-8 h-8 md:w-10 md:h-10 mx-auto mb-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 3h16v16H4z"></path></svg>' },
@@ -166,11 +198,9 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: 'vinilo_transparente', name: 'Vinilo Transparente', finishes: { mate: { name: 'Mate', costKey: 'vinilo_transparente_mate' }, brillante: { name: 'Brillante', costKey: 'vinilo_transparente_mate' } } }
         ]
     };
-
     const state = { shape: null, width: null, height: null, material: null, finish: null, quantity: null, roundedCorners: false, touched: { width: false, height: false, quantity: false } };
-
     const dom = {
-        form: document.querySelector('#cotizador-form'), // NUEVO
+        form: document.querySelector('#cotizador-form'),
         shapeOptions: document.querySelector('#shape-options'),
         roundedCornersContainer: document.querySelector('#rounded-corners-container'),
         roundedCornersCheckbox: document.querySelector('#rounded-corners-checkbox'),
@@ -189,17 +219,18 @@ document.addEventListener('DOMContentLoaded', () => {
         summary: { shape: document.querySelector('#summary-shape'), size: document.querySelector('#summary-size'), material: document.querySelector('#summary-material'), quantity: document.querySelector('#summary-quantity'), unitPrice: document.querySelector('#unit-price'), netPrice: document.querySelector('#net-price'), ivaPrice: document.querySelector('#iva-price'), totalPrice: document.querySelector('#total-price'), totalPriceWrapper: document.querySelector('#total-price-wrapper') },
         submitButton: document.querySelector('#submit-button')
     };
-
     let hasInteracted = false;
     function sendGAEvent(eventName) {
-        window.parent.postMessage({ event: eventName }, 'https://www.stickersatinta.com');
+        if (window.parent) {
+            window.parent.postMessage({ event: eventName }, 'https://www.stickersatinta.com');
+        }
     }
-
     function sendHeight() {
         const height = document.querySelector('.sofia-morales-cotizador').offsetHeight;
-        window.parent.postMessage({ frameHeight: height }, 'https://www.stickersatinta.com');
+        if (window.parent) {
+            window.parent.postMessage({ frameHeight: height }, 'https://www.stickersatinta.com');
+        }
     }
-
     const calculator = {
         getBaseConfig: () => {
             const { shape, width, height, material, finish } = state;
@@ -245,7 +276,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return { netPrice, unitPrice: finalUnitPrice };
         }
     };
-
     const ui = {
         renderOptions: () => {
             dom.shapeOptions.innerHTML = CONFIG.shapes.map(s => `<button type="button" data-shape="${s.id}" class="option-button border-2 border-gray-300 rounded-lg p-2 text-center text-sm md:text-base">${s.icon}<span class="font-semibold">${s.name}</span></button>`).join('');
@@ -254,91 +284,61 @@ document.addEventListener('DOMContentLoaded', () => {
         update: () => {
             ui.validateAll();
             const baseConfig = calculator.getBaseConfig();
-            const { netPrice, unitPrice } = state.quantity ? calculator.forQuantity(state.quantity, baseConfig, CONFIG.priceTiers) : { netPrice: 0, unitPrice: 0 };
-            const isValid = netPrice > 0 && state.quantity >= CONFIG.minimumQuantity && state.quantity <= CONFIG.maximumQuantity;
-            
-            if (isValid) {
-                sendGAEvent('cotizador_precio_calculado');
-            }
-
+            const isQuantityValid = state.quantity && state.quantity >= CONFIG.minimumQuantity && state.quantity <= CONFIG.maximumQuantity;
+            const { netPrice, unitPrice } = (state.quantity && baseConfig) ? calculator.forQuantity(state.quantity, baseConfig, CONFIG.priceTiers) : { netPrice: 0, unitPrice: 0 };
+            const isValidAndCalculated = isQuantityValid && netPrice > 0;
+            if (isValidAndCalculated && hasInteracted) { sendGAEvent('cotizador_precio_calculado'); }
             let shapeName = state.shape ? CONFIG.shapes.find(s=>s.id===state.shape).name : '--';
             if (state.shape === 'rectangular' && state.roundedCorners) { shapeName = 'Rect. Redondeado'; } 
             else if (state.shape === 'circular' && state.width !== state.height) { shapeName = 'Óvalo'; }
             dom.summary.shape.textContent = shapeName;
             dom.summary.size.textContent = (state.width && state.height) ? `${state.width} x ${state.height} cm` : '--';
             const mat = CONFIG.materialOptions.find(m=>m.id===state.material);
-            const fullMaterialName = mat ? `${mat.name} ${state.finish ? `(${mat.finishes[state.finish].name})` : ''}` : '--';
-            dom.summary.material.textContent = fullMaterialName;
-            dom.summary.quantity.textContent = state.quantity ? `${state.quantity} u.` : '--';
+            dom.summary.material.textContent = mat ? `${mat.name} ${state.finish ? `(${mat.finishes[state.finish].name})` : ''}` : '--';
+            dom.summary.quantity.textContent = state.quantity ? `${state.quantity.toLocaleString('es-CL')} u.` : '--';
             const ivaAmount = Math.round(netPrice * CONFIG.ivaRate);
             const totalPrice = netPrice + ivaAmount;
             const unitPriceFormatted = unitPrice < 100 ? unitPrice.toLocaleString('es-CL', {minimumFractionDigits: 1, maximumFractionDigits: 1}) : Math.round(unitPrice).toLocaleString('es-CL');
             dom.summary.unitPrice.textContent = `$${unitPrice > 0 ? unitPriceFormatted : '0'}`;
             dom.summary.netPrice.textContent = `$${Math.round(netPrice).toLocaleString('es-CL')}`;
             dom.summary.ivaPrice.textContent = `$${ivaAmount.toLocaleString('es-CL')}`;
-            const totalPriceFormatted = `$${Math.round(totalPrice).toLocaleString('es-CL')}`;
-            dom.summary.totalPrice.textContent = totalPriceFormatted;
-
-            if (isValid) {
+            dom.summary.totalPrice.textContent = `$${Math.round(totalPrice).toLocaleString('es-CL')}`;
+            if (isValidAndCalculated) {
                 dom.summary.totalPriceWrapper.classList.remove('price-updated');
                 void dom.summary.totalPriceWrapper.offsetWidth;
                 dom.summary.totalPriceWrapper.classList.add('price-updated');
             }
-            dom.submitButton.disabled = !isValid;
-            dom.submitButton.classList.toggle('ready-to-submit', isValid);
+            dom.submitButton.disabled = !isValidAndCalculated;
+            dom.submitButton.classList.toggle('ready-to-submit', isValidAndCalculated);
+            sendHeight();
         },
-        updateHiddenFields: () => { // NUEVO
+        updateHiddenFields: () => {
             const mat = CONFIG.materialOptions.find(m => m.id === state.material);
             let shapeName = state.shape ? CONFIG.shapes.find(s => s.id === state.shape).name : '';
             if (state.shape === 'rectangular' && state.roundedCorners) { shapeName = 'Rect. Redondeado'; }
             else if (state.shape === 'circular' && state.width !== state.height) { shapeName = 'Óvalo'; }
-            
             dom.hiddenInputs.shape.value = String(shapeName || '');
             dom.hiddenInputs.roundedCorners.value = state.roundedCorners ? 'Sí' : 'No';
             dom.hiddenInputs.material.value = String(mat ? mat.name : '');
             dom.hiddenInputs.finish.value = String(state.finish && mat ? mat.finishes[state.finish].name : '');
             dom.hiddenInputs.totalPrice.value = String(dom.summary.totalPrice.textContent || '');
-
-            console.log("--- VALORES A ENVIAR ---");
-            console.log("Forma:", dom.hiddenInputs.shape.value);
-            console.log("Material:", dom.hiddenInputs.material.value);
-            console.log("Acabado:", dom.hiddenInputs.finish.value);
-            console.log("Total:", dom.hiddenInputs.totalPrice.value);
-            console.log("------------------------");
-        },
-        validateInput: (input, errorEl, touchedFlag) => {
-            if (!touchedFlag) return true;
-            const value = parseFloat(input.value);
-            let errorMessage = '';
-            if (input.value === '') {} 
-            else if (isNaN(value) || value <= 0) { errorMessage = 'Debe ser positivo.'; } 
-            else if (input.id === 'quantity') {
-                if (value < CONFIG.minimumQuantity) errorMessage = `Mínimo: ${CONFIG.minimumQuantity} u.`;
-                if (value > CONFIG.maximumQuantity) errorMessage = `Máximo: ${CONFIG.maximumQuantity} u.`;
-            }
-            errorEl.textContent = errorMessage;
-            errorEl.classList.toggle('hidden', !errorMessage);
-            input.classList.toggle('invalid', !!errorMessage);
-            return !errorMessage;
         },
         validateAll: () => {
-            ui.validateInput(dom.inputs.width, dom.errors.width, state.touched.width);
-            ui.validateInput(dom.inputs.height, dom.errors.height, state.touched.height);
-            ui.validateInput(dom.inputs.quantity, dom.errors.quantity, state.touched.quantity);
+            const widthValid = ui.validateInput(dom.inputs.width, dom.errors.width, state.touched.width);
+            const heightValid = ui.validateInput(dom.inputs.height, dom.errors.height, state.touched.height);
+            const quantityValid = ui.validateInput(dom.inputs.quantity, dom.errors.quantity, state.touched.quantity);
+            return widthValid && heightValid && quantityValid;
         }
     };
-
     const events = {
         bind: () => {
-            dom.form.addEventListener('submit', (event) => { // MODIFICADO
-                // Llama a la función para actualizar los campos ocultos JUSTO ANTES de enviar.
+            dom.form.addEventListener('submit', (event) => {
                 ui.updateHiddenFields();
                 sendGAEvent('cotizador_formulario_enviado');
             });
-            
             dom.shapeOptions.addEventListener('click', e => {
                 const button = e.target.closest('button'); if (!button) return;
-                if (!hasInteracted) { sendGAEvent('cotizador_interaccion'); hasInteracted = true; }
+                if (!hasInteracted) { sendGAEvent('cotizador_interaccion_inicial'); hasInteracted = true; }
                 state.shape = button.dataset.shape;
                 dom.shapeOptions.querySelectorAll('button').forEach(btn => btn.classList.remove('selected-option'));
                 button.classList.add('selected-option');
@@ -349,8 +349,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     dom.roundedCornersCheckbox.checked = false;
                 }
                 if (state.shape === 'circular') {
-                    dom.inputs.height.value = dom.inputs.width.value;
-                    state.height = state.width;
+                    if(dom.inputs.width.value) {
+                       dom.inputs.height.value = dom.inputs.width.value;
+                       state.height = parseFloat(dom.inputs.width.value);
+                    }
                     dom.inputs.height.disabled = true;
                 } else {
                     dom.inputs.height.disabled = false;
@@ -358,13 +360,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 ui.update();
             });
             dom.roundedCornersCheckbox.addEventListener('change', e => {
-                if (!hasInteracted) { sendGAEvent('cotizador_interaccion'); hasInteracted = true; }
+                if (!hasInteracted) { sendGAEvent('cotizador_interaccion_inicial'); hasInteracted = true; }
                 state.roundedCorners = e.target.checked;
                 ui.update();
             });
             dom.materialOptions.addEventListener('click', e => {
                 const button = e.target.closest('button'); if (!button) return;
-                if (!hasInteracted) { sendGAEvent('cotizador_interaccion'); hasInteracted = true; }
+                if (!hasInteracted) { sendGAEvent('cotizador_interaccion_inicial'); hasInteracted = true; }
                 state.material = button.dataset.material; state.finish = null;
                 dom.materialOptions.querySelectorAll('button').forEach(btn => btn.classList.remove('selected-option'));
                 button.classList.add('selected-option');
@@ -377,37 +379,37 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             dom.finishOptions.addEventListener('click', e => {
                 const button = e.target.closest('button'); if (!button) return;
-                if (!hasInteracted) { sendGAEvent('cotizador_interaccion'); hasInteracted = true; }
+                if (!hasInteracted) { sendGAEvent('cotizador_interaccion_inicial'); hasInteracted = true; }
                 state.finish = button.dataset.finish;
                 dom.finishOptions.querySelectorAll('button').forEach(btn => btn.classList.remove('selected-option'));
                 button.classList.add('selected-option');
                 ui.update();
             });
             Object.keys(dom.inputs).forEach(key => {
-                dom.inputs[key].addEventListener('input', e => {
-                    if (!hasInteracted) { sendGAEvent('cotizador_interaccion'); hasInteracted = true; }
+                const inputElement = dom.inputs[key];
+                 inputElement.addEventListener('focus', () => {
                     state.touched[key] = true;
+                });
+                inputElement.addEventListener('input', e => {
+                    if (!hasInteracted) { sendGAEvent('cotizador_interaccion_inicial'); hasInteracted = true; }
                     state[key] = parseFloat(e.target.value) || null;
                     if (key === 'width' && state.shape === 'circular') {
                         dom.inputs.height.value = e.target.value;
-                        state.height = state.width;
+                        state.height = state[key];
                     }
                     ui.update();
                 });
             });
-
             const resizeObserver = new ResizeObserver(() => sendHeight());
             resizeObserver.observe(document.querySelector('.sofia-morales-cotizador'));
         }
     };
-
     function main() {
         ui.renderOptions();
         events.bind();
         ui.update();
         sendHeight(); 
     }
-    
     main();
 });
 </script>
