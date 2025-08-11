@@ -181,12 +181,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 { minQuantity: 1000, cost: 50000 }
             ]
         },
+        // ▼▼▼ CURVA DE PRECIOS SINCRONIZADA CON TU PANEL DE ADMIN ▼▼▼
         priceTiers: [
-            { minQuantity: 180000, markup: 2.0 }, { minQuantity: 150000, markup: 2.1 }, { minQuantity: 100000, markup: 2.2 },
-            { minQuantity: 75000,  markup: 2.3 }, { minQuantity: 50000,  markup: 2.4 }, { minQuantity: 30000,  markup: 2.5 },
-            { minQuantity: 20000,  markup: 2.6 }, { minQuantity: 15000,  markup: 2.8 }, { minQuantity: 10000,  markup: 3.0 },
-            { minQuantity: 7500,   markup: 3.2 }, { minQuantity: 5000,   markup: 3.5 },{ minQuantity: 3500,   markup: 3.8 },
-            { minQuantity: 2500,   markup: 4.2 },{ minQuantity: 1500,   markup: 4.5 },{ minQuantity: 1000,   markup: 5.0 }
+            { minQuantity: 180000, markup: 2.0 },
+            { minQuantity: 150000, markup: 2.1 },
+            { minQuantity: 100000, markup: 2.2 },
+            { minQuantity: 75000,  markup: 2.3 },
+            { minQuantity: 50000,  markup: 2.4 },
+            { minQuantity: 30000,  markup: 2.5 },
+            { minQuantity: 20000,  markup: 2.5 },
+            { minQuantity: 15000,  markup: 2.5 },
+            { minQuantity: 10000,  markup: 2.5 },
+            { minQuantity: 7500,   markup: 2.19 },
+            { minQuantity: 5000,   markup: 1.6 },
+            { minQuantity: 3500,   markup: 1.8 },
+            { minQuantity: 2500,   markup: 1.84 },
+            { minQuantity: 1500,   markup: 1.97 },
+            { minQuantity: 1000,   markup: 2.0 }
         ],
         shapes: [ 
             { id: 'rectangular', name: 'Rectangular', multiplier: 1.0, icon: '<svg class="w-8 h-8 md:w-10 md:h-10 mx-auto mb-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 3h16v16H4z"></path></svg>' },
@@ -198,7 +209,9 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: 'vinilo_transparente', name: 'Vinilo Transparente', finishes: { mate: { name: 'Mate', costKey: 'vinilo_transparente_mate' }, brillante: { name: 'Brillante', costKey: 'vinilo_transparente_mate' } } }
         ]
     };
+
     const state = { shape: null, width: null, height: null, material: null, finish: null, quantity: null, roundedCorners: false, touched: { width: false, height: false, quantity: false } };
+
     const dom = {
         form: document.querySelector('#cotizador-form'),
         shapeOptions: document.querySelector('#shape-options'),
@@ -219,18 +232,21 @@ document.addEventListener('DOMContentLoaded', () => {
         summary: { shape: document.querySelector('#summary-shape'), size: document.querySelector('#summary-size'), material: document.querySelector('#summary-material'), quantity: document.querySelector('#summary-quantity'), unitPrice: document.querySelector('#unit-price'), netPrice: document.querySelector('#net-price'), ivaPrice: document.querySelector('#iva-price'), totalPrice: document.querySelector('#total-price'), totalPriceWrapper: document.querySelector('#total-price-wrapper') },
         submitButton: document.querySelector('#submit-button')
     };
+
     let hasInteracted = false;
     function sendGAEvent(eventName) {
         if (window.parent) {
             window.parent.postMessage({ event: eventName }, 'https://www.stickersatinta.com');
         }
     }
+
     function sendHeight() {
         const height = document.querySelector('.sofia-morales-cotizador').offsetHeight;
         if (window.parent) {
             window.parent.postMessage({ frameHeight: height }, 'https://www.stickersatinta.com');
         }
     }
+
     const calculator = {
         getBaseConfig: () => {
             const { shape, width, height, material, finish } = state;
@@ -276,6 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return { netPrice, unitPrice: finalUnitPrice };
         }
     };
+
     const ui = {
         renderOptions: () => {
             dom.shapeOptions.innerHTML = CONFIG.shapes.map(s => `<button type="button" data-shape="${s.id}" class="option-button border-2 border-gray-300 rounded-lg p-2 text-center text-sm md:text-base">${s.icon}<span class="font-semibold">${s.name}</span></button>`).join('');
