@@ -183,6 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: 'vinilo_transparente', name: 'Vinilo Transparente', finishes: { mate: { name: 'Mate', costKey: 'vinilo_transparente_mate' }, brillante: { name: 'Brillante', costKey: 'vinilo_transparente_mate' } } }
         ]
     };
+
     const state = { shape: null, width: null, height: null, material: null, finish: null, quantity: null, roundedCorners: false, touched: { width: false, height: false, quantity: false } };
     const dom = {
         form: document.querySelector('#cotizador-form'),
@@ -198,9 +199,11 @@ document.addEventListener('DOMContentLoaded', () => {
         summary: { shape: document.querySelector('#summary-shape'), size: document.querySelector('#summary-size'), material: document.querySelector('#summary-material'), quantity: document.querySelector('#summary-quantity'), unitPrice: document.querySelector('#unit-price'), netPrice: document.querySelector('#net-price'), ivaPrice: document.querySelector('#iva-price'), totalPrice: document.querySelector('#total-price'), totalPriceWrapper: document.querySelector('#total-price-wrapper') },
         submitButton: document.querySelector('#submit-button')
     };
+
     let hasInteracted = false;
     function sendGAEvent(eventName) { if (window.parent) { window.parent.postMessage({ event: eventName }, 'https://www.stickersatinta.com'); } }
     function sendHeight() { const height = document.querySelector('.sofia-morales-cotizador').offsetHeight; if (window.parent) { window.parent.postMessage({ frameHeight: height }, 'https://www.stickersatinta.com'); } }
+    
     const calculator = {
         getBaseConfig: () => {
             const { shape, width, height, material, finish } = state;
@@ -248,14 +251,17 @@ document.addEventListener('DOMContentLoaded', () => {
             dom.materialOptions.innerHTML = CONFIG.materialOptions.map(m => `<button type="button" data-material="${m.id}" class="w-full text-left option-button border-2 border-gray-300 rounded-lg p-4"><span class="font-semibold">${m.name}</span></button>`).join('');
         },
         update: () => {
+            // Se llama a la validación PRIMERO para mostrar mensajes de error inmediatamente.
+            ui.validateAll(); 
+            
             const isQuantityValid = state.quantity && state.quantity >= CONFIG.minimumQuantity && state.quantity <= CONFIG.maximumQuantity;
             const baseConfig = calculator.getBaseConfig();
             
+            // El cálculo de precio solo se ejecuta si la cantidad es válida y todos los demás campos están seleccionados.
             const { netPrice, unitPrice } = (isQuantityValid && baseConfig) ? calculator.forQuantity(state.quantity, baseConfig, CONFIG.priceTiers) : { netPrice: 0, unitPrice: 0 };
 
-            ui.validateAll();
-            
-            const isValidAndCalculated = isQuantityValid && netPrice > 0;
+            const isValidAndCalculated = isQuantityValid && baseConfig && netPrice > 0;
+
             if (isValidAndCalculated && hasInteracted) { sendGAEvent('cotizador_precio_calculado'); }
             let shapeName = state.shape ? CONFIG.shapes.find(s=>s.id===state.shape).name : '--';
             if (state.shape === 'rectangular' && state.roundedCorners) { shapeName = 'Rect. Redondeado'; } 
@@ -311,7 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const widthValid = ui.validateInput(dom.inputs.width, dom.errors.width, state.touched.width);
             const heightValid = ui.validateInput(dom.inputs.height, dom.errors.height, state.touched.height);
             const quantityValid = ui.validateInput(dom.inputs.quantity, dom.errors.quantity, state.touched.quantity);
-            return widthValid && heightValid && quantityValid;
+            // No retorna valor, solo ejecuta la validación visual
         }
     };
     const events = {
