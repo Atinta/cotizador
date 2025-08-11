@@ -10,48 +10,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         body { margin: 0; padding: 0; background-color: transparent; }
-        .sofia-morales-cotizador { 
-            font-family: 'Inter', sans-serif; 
-            -webkit-font-smoothing: antialiased; 
-            -moz-osx-font-smoothing: grayscale; 
-            color: #1f2937;
-            box-sizing: border-box;
-        }
-        .sofia-morales-cotizador *, .sofia-morales-cotizador *::before, .sofia-morales-cotizador *::after {
-            box-sizing: border-box;
-        }
+        .sofia-morales-cotizador { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; color: #1f2937; box-sizing: border-box; }
+        .sofia-morales-cotizador *, .sofia-morales-cotizador *::before, .sofia-morales-cotizador *::after { box-sizing: border-box; }
         .sofia-morales-cotizador .action-bg { background-color: #E5007E; }
         .sofia-morales-cotizador .action-text { color: #E5007E; }
-        .sofia-morales-cotizador .selected-option { 
-            border-color: #E5007E; 
-            box-shadow: 0 0 0 2px #E5007E; 
-            transform: scale(1.02); 
-        }
+        .sofia-morales-cotizador .selected-option { border-color: #E5007E; box-shadow: 0 0 0 2px #E5007E; transform: scale(1.02); }
         .sofia-morales-cotizador .option-button, .sofia-morales-cotizador .form-input { transition: all 0.2s ease-in-out; }
         .sofia-morales-cotizador .form-input { color: #111827; }
         .sofia-morales-cotizador .form-input::placeholder { color: #9CA3AF; }
-        .sofia-morales-cotizador .form-input.invalid { 
-            border-color: #EF4444; 
-            box-shadow: 0 0 0 2px #FECACA; 
-        }
-        .sofia-morales-cotizador .collapsible-content.hidden, 
-        .sofia-morales-cotizador .error-message.hidden { 
-            opacity: 0; max-height: 0; margin-top: 0; overflow: hidden; transition: all 0.3s ease-out; 
-        }
-        .sofia-morales-cotizador .collapsible-content, 
-        .sofia-morales-cotizador .error-message { 
-            opacity: 1; max-height: 2000px; transition: all 0.3s ease-in; 
-        }
-        .sofia-morales-cotizador .spinner { 
-            border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 50%; border-top-color: #fff; 
-            width: 16px; height: 16px; animation: spin 1s ease-in-out infinite; 
-        }
+        .sofia-morales-cotizador .form-input.invalid { border-color: #EF4444; box-shadow: 0 0 0 2px #FECACA; }
+        .sofia-morales-cotizador .collapsible-content.hidden, .sofia-morales-cotizador .error-message.hidden { opacity: 0; max-height: 0; margin-top: 0; overflow: hidden; transition: all 0.3s ease-out; }
+        .sofia-morales-cotizador .collapsible-content, .sofia-morales-cotizador .error-message { opacity: 1; max-height: 2000px; transition: all 0.3s ease-in; }
+        .sofia-morales-cotizador .spinner { border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 50%; border-top-color: #fff; width: 16px; height: 16px; animation: spin 1s ease-in-out infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes price-update-glow { 
-            0% { background-color: transparent; } 
-            40% { background-color: #fce7f3; box-shadow: 0 0 12px #fbcfe8; } 
-            100% { background-color: transparent; } 
-        }
+        @keyframes price-update-glow { 0% { background-color: transparent; } 40% { background-color: #fce7f3; } 100% { background-color: transparent; } }
         .sofia-morales-cotizador .price-updated { animation: price-update-glow 0.8s ease-out; }
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
         .sofia-morales-cotizador .ready-to-submit { animation: pulse 2s infinite; }
@@ -65,15 +37,8 @@
             <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">Crea tu Sticker Perfecto</h2>
             <p class="max-w-xl mx-auto text-base md:text-lg text-gray-600 mt-2">Configura tus opciones y obtén tu precio al instante.</p>
         </div>
-        
         <form id="cotizador-form" action="https://formspree.io/f/xkgzzrkw" method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="_next" value="https://www.stickersatinta.com/gracias">
-            <input type="hidden" name="_captcha" value="false">
-            <input type="hidden" name="Forma" id="hidden-shape">
-            <input type="hidden" name="Bordes_Redondeados" id="hidden-rounded-corners">
-            <input type="hidden" name="Material" id="hidden-material">
-            <input type="hidden" name="Acabado" id="hidden-finish">
-            <input type="hidden" name="Valor_Total_Calculado" id="hidden-total-price">
+            <input type="hidden" name="_next" value="https://www.stickersatinta.com/gracias"><input type="hidden" name="_captcha" value="false"><input type="hidden" name="Forma" id="hidden-shape"><input type="hidden" name="Bordes_Redondeados" id="hidden-rounded-corners"><input type="hidden" name="Material" id="hidden-material"><input type="hidden" name="Acabado" id="hidden-finish"><input type="hidden" name="Valor_Total_Calculado" id="hidden-total-price">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
                 <div class="space-y-6">
                     <div>
@@ -81,8 +46,7 @@
                         <div id="shape-options" class="grid grid-cols-3 gap-2 md:gap-4"></div>
                         <div id="rounded-corners-container" class="collapsible-content hidden mt-4">
                             <label class="flex items-center space-x-2 cursor-pointer bg-gray-50 p-3 rounded-lg">
-                                <input type="checkbox" id="rounded-corners-checkbox" class="h-5 w-5 rounded border-gray-300 text-pink-600 focus:ring-pink-500">
-                                <span class="text-gray-700 font-medium">Bordes Redondeados</span>
+                                <input type="checkbox" id="rounded-corners-checkbox" class="h-5 w-5 rounded border-gray-300 text-pink-600 focus:ring-pink-500"><span class="text-gray-700 font-medium">Bordes Redondeados</span>
                             </label>
                         </div>
                     </div>
@@ -97,8 +61,8 @@
                         <label class="font-bold text-lg text-gray-800 block mb-3">3. Elige el Material</label>
                         <div id="material-options" class="space-y-3"></div>
                         <div id="finish-options-container" class="collapsible-content hidden mt-4">
-                                <label class="font-bold text-md text-gray-700 block mb-2">3a. Elige el Acabado</label>
-                                <div id="finish-options" class="grid grid-cols-2 gap-4"></div>
+                            <label class="font-bold text-md text-gray-700 block mb-2">3a. Elige el Acabado</label>
+                            <div id="finish-options" class="grid grid-cols-2 gap-4"></div>
                         </div>
                     </div>
                     <div>
@@ -161,37 +125,17 @@ document.addEventListener('DOMContentLoaded', () => {
             printerSetupMinutes: 30,
             cutterSetupMinutes: 20,
             printSpeedSqmPerHour: 6.7,
-            wasteTiers: [
-                { minQuantity: 100000, percentage: 0.20 },
-                { minQuantity: 15000, percentage: 0.25 },
-                { minQuantity: 1000, percentage: 0.30 }
-            ],
-            outsourcing: [
-                { minQuantity: 80000, guillotineCost: 200000, extraLaborDays: 2 },
-                { minQuantity: 40000, guillotineCost: 100000, extraLaborDays: 1 }
-            ],
+            wasteTiers: [{ minQuantity: 100000, percentage: 0.20 }, { minQuantity: 15000, percentage: 0.25 }, { minQuantity: 1000, percentage: 0.30 }],
+            outsourcing: [{ minQuantity: 80000, guillotineCost: 200000, extraLaborDays: 2 }, { minQuantity: 40000, guillotineCost: 100000, extraLaborDays: 1 }],
             extraLaborCostPerDay: 28000,
-            packagingCostTiers: [
-                { minQuantity: 50000, cost: 150000 },
-                { minQuantity: 1000, cost: 50000 }
-            ]
+            packagingCostTiers: [{ minQuantity: 50000, cost: 150000 }, { minQuantity: 1000, cost: 50000 }]
         },
         priceTiers: [
-            { minQuantity: 180000, markup: 2.0 },
-            { minQuantity: 150000, markup: 2.1 },
-            { minQuantity: 100000, markup: 2.2 },
-            { minQuantity: 75000,  markup: 2.3 },
-            { minQuantity: 50000,  markup: 2.4 },
-            { minQuantity: 30000,  markup: 2.5 },
-            { minQuantity: 20000,  markup: 2.5 },
-            { minQuantity: 15000,  markup: 2.5 },
-            { minQuantity: 10000,  markup: 2.5 },
-            { minQuantity: 7500,   markup: 2.19 },
-            { minQuantity: 5000,   markup: 1.6 },
-            { minQuantity: 3500,   markup: 1.8 },
-            { minQuantity: 2500,   markup: 1.84 },
-            { minQuantity: 1500,   markup: 1.97 },
-            { minQuantity: 1000,   markup: 2.0 }
+            { minQuantity: 180000, markup: 2.0 }, { minQuantity: 150000, markup: 2.1 }, { minQuantity: 100000, markup: 2.2 },
+            { minQuantity: 75000,  markup: 2.3 }, { minQuantity: 50000,  markup: 2.4 }, { minQuantity: 30000,  markup: 2.5 },
+            { minQuantity: 20000,  markup: 2.5 }, { minQuantity: 15000,  markup: 2.5 }, { minQuantity: 10000,  markup: 2.5 },
+            { minQuantity: 7500,   markup: 2.19 },{ minQuantity: 5000,   markup: 1.6 },  { minQuantity: 3500,   markup: 1.8 },
+            { minQuantity: 2500,   markup: 1.84 },{ minQuantity: 1500,   markup: 1.97 },{ minQuantity: 1000,   markup: 2.0 }
         ],
         shapes: [ 
             { id: 'rectangular', name: 'Rectangular', multiplier: 1.0, icon: '<svg class="w-8 h-8 md:w-10 md:h-10 mx-auto mb-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 3h16v16H4z"></path></svg>' },
@@ -213,29 +157,14 @@ document.addEventListener('DOMContentLoaded', () => {
         finishOptionsContainer: document.querySelector('#finish-options-container'),
         finishOptions: document.querySelector('#finish-options'),
         inputs: { width: document.querySelector('#width'), height: document.querySelector('#height'), quantity: document.querySelector('#quantity') },
-        hiddenInputs: {
-            shape: document.querySelector('#hidden-shape'),
-            roundedCorners: document.querySelector('#hidden-rounded-corners'),
-            material: document.querySelector('#hidden-material'),
-            finish: document.querySelector('#hidden-finish'),
-            totalPrice: document.querySelector('#hidden-total-price')
-        },
+        hiddenInputs: { shape: document.querySelector('#hidden-shape'), roundedCorners: document.querySelector('#hidden-rounded-corners'), material: document.querySelector('#hidden-material'), finish: document.querySelector('#hidden-finish'), totalPrice: document.querySelector('#hidden-total-price')},
         errors: { width: document.querySelector('#width-error'), height: document.querySelector('#height-error'), quantity: document.querySelector('#quantity-error') },
         summary: { shape: document.querySelector('#summary-shape'), size: document.querySelector('#summary-size'), material: document.querySelector('#summary-material'), quantity: document.querySelector('#summary-quantity'), unitPrice: document.querySelector('#unit-price'), netPrice: document.querySelector('#net-price'), ivaPrice: document.querySelector('#iva-price'), totalPrice: document.querySelector('#total-price'), totalPriceWrapper: document.querySelector('#total-price-wrapper') },
         submitButton: document.querySelector('#submit-button')
     };
     let hasInteracted = false;
-    function sendGAEvent(eventName) {
-        if (window.parent) {
-            window.parent.postMessage({ event: eventName }, 'https://www.stickersatinta.com');
-        }
-    }
-    function sendHeight() {
-        const height = document.querySelector('.sofia-morales-cotizador').offsetHeight;
-        if (window.parent) {
-            window.parent.postMessage({ frameHeight: height }, 'https://www.stickersatinta.com');
-        }
-    }
+    function sendGAEvent(eventName) { if (window.parent) { window.parent.postMessage({ event: eventName }, 'https://www.stickersatinta.com'); } }
+    function sendHeight() { const height = document.querySelector('.sofia-morales-cotizador').offsetHeight; if (window.parent) { window.parent.postMessage({ frameHeight: height }, 'https://www.stickersatinta.com'); } }
     const calculator = {
         getBaseConfig: () => {
             const { shape, width, height, material, finish } = state;
@@ -247,8 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         getRealCost: (quantity, baseConfig) => {
             if (!baseConfig) return { totalCost: 0, unitCost: 0 };
-            const pc = CONFIG.productionCosts;
-            const laborRatePerMinute = pc.laborRatePerHour / 60;
+            const pc = CONFIG.productionCosts; const laborRatePerMinute = pc.laborRatePerHour / 60;
             const totalSetupMinutes = pc.prepPressMinutes + pc.printerSetupMinutes + pc.cutterSetupMinutes;
             const totalSetupCost = totalSetupMinutes * laborRatePerMinute;
             const stickerAreaM2 = baseConfig.stickerAreaCm2 / 10000;
@@ -262,10 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const printingCost = printingHours * pc.laborRatePerHour;
             let outsourcingCost = 0;
             const outsourcingTier = pc.outsourcing.find(t => quantity >= t.minQuantity);
-            if (outsourcingTier) {
-                outsourcingCost += outsourcingTier.guillotineCost;
-                outsourcingCost += outsourcingTier.extraLaborDays * pc.extraLaborCostPerDay;
-            }
+            if (outsourcingTier) { outsourcingCost += outsourcingTier.guillotineCost; outsourcingCost += outsourcingTier.extraLaborDays * pc.extraLaborCostPerDay; }
             const packagingTier = pc.packagingCostTiers.find(t => quantity >= t.minQuantity);
             const packagingCost = packagingTier ? packagingTier.cost : 0;
             const totalCost = totalSetupCost + totalMaterialCost + printingCost + outsourcingCost + packagingCost;
@@ -329,10 +254,9 @@ document.addEventListener('DOMContentLoaded', () => {
             dom.hiddenInputs.totalPrice.value = String(dom.summary.totalPrice.textContent || '');
         },
         validateAll: () => {
-            const widthValid = ui.validateInput(dom.inputs.width, dom.errors.width, state.touched.width);
-            const heightValid = ui.validateInput(dom.inputs.height, dom.errors.height, state.touched.height);
-            const quantityValid = ui.validateInput(dom.inputs.quantity, dom.errors.quantity, state.touched.quantity);
-            return widthValid && heightValid && quantityValid;
+            ui.validateInput(dom.inputs.width, dom.errors.width, state.touched.width);
+            ui.validateInput(dom.inputs.height, dom.errors.height, state.touched.height);
+            ui.validateInput(dom.inputs.quantity, dom.errors.quantity, state.touched.quantity);
         }
     };
     const events = {
@@ -349,15 +273,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 button.classList.add('selected-option');
                 const showCorners = state.shape === 'rectangular';
                 dom.roundedCornersContainer.classList.toggle('hidden', !showCorners);
-                if (!showCorners) {
-                    state.roundedCorners = false;
-                    dom.roundedCornersCheckbox.checked = false;
-                }
+                if (!showCorners) { state.roundedCorners = false; dom.roundedCornersCheckbox.checked = false; }
                 if (state.shape === 'circular') {
-                    if(dom.inputs.width.value) {
-                       dom.inputs.height.value = dom.inputs.width.value;
-                       state.height = parseFloat(dom.inputs.width.value);
-                    }
+                    if(dom.inputs.width.value) { dom.inputs.height.value = dom.inputs.width.value; state.height = parseFloat(dom.inputs.width.value); }
                     dom.inputs.height.disabled = true;
                 } else {
                     dom.inputs.height.disabled = false;
@@ -382,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 ui.update();
             });
-            // ▼▼▼ ESTA ES LA PIEZA DE CÓDIGO QUE FALTABA Y HA SIDO RESTAURADA ▼▼▼
+            // ▼▼▼ BUG FIX: EVENT LISTENER PARA BOTONES DE ACABADO RESTAURADO ▼▼▼
             dom.finishOptions.addEventListener('click', e => {
                 const button = e.target.closest('button'); if (!button) return;
                 if (!hasInteracted) { sendGAEvent('cotizador_interaccion_inicial'); hasInteracted = true; }
@@ -393,9 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             Object.keys(dom.inputs).forEach(key => {
                 const inputElement = dom.inputs[key];
-                 inputElement.addEventListener('focus', () => {
-                    state.touched[key] = true;
-                });
+                 inputElement.addEventListener('focus', () => { state.touched[key] = true; });
                 inputElement.addEventListener('input', e => {
                     if (!hasInteracted) { sendGAEvent('cotizador_interaccion_inicial'); hasInteracted = true; }
                     state[key] = parseFloat(e.target.value) || null;
