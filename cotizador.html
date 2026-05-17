@@ -62,13 +62,14 @@
 <div class="sofia-morales-cotizador">
     <div class="bg-white p-4 md:p-8 rounded-2xl shadow-xl max-w-5xl mx-auto">
         <div class="text-center mb-8 md:mb-10">
-            <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">Crea tu Sticker Perfecto</h2>
-            <p class="max-w-xl mx-auto text-base md:text-lg text-gray-600 mt-2">Configura tus opciones y obtén tu precio al instante.</p>
+            <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">Cotiza tu Producción de Stickers</h2>
+            <p class="max-w-xl mx-auto text-base md:text-lg text-gray-600 mt-2">Configura tu volumen B2B y un especialista te contactará con una propuesta.</p>
         </div>
         
         <form id="cotizador-form" action="https://formspree.io/f/xkgzzrkw" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="_next" value="https://www.stickersatinta.com/gracias">
             <input type="hidden" name="_captcha" value="false">
+            <input type="text" name="_gotcha" style="display:none" />
             <input type="hidden" name="Forma" id="hidden-shape">
             <input type="hidden" name="Bordes_Redondeados" id="hidden-rounded-corners">
             <input type="hidden" name="Material" id="hidden-material">
@@ -89,8 +90,14 @@
                     <div>
                         <label class="font-bold text-lg text-gray-800 block mb-3">2. Ingresa las Dimensiones (cm)</label>
                         <div class="grid grid-cols-2 gap-4">
-                            <div><input id="width" name="Ancho_(cm)" type="number" inputmode="decimal" placeholder="Ancho" class="form-input w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500" aria-label="Ancho en centímetros"><p id="width-error" class="error-message hidden text-red-500 text-sm mt-1"></p></div>
-                            <div><input id="height" name="Alto_(cm)" type="number" inputmode="decimal" placeholder="Alto" class="form-input w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500" aria-label="Alto en centímetros"><p id="height-error" class="error-message hidden text-red-500 text-sm mt-1"></p></div>
+                            <div>
+                                <input id="width" name="Ancho_(cm)" type="number" inputmode="decimal" placeholder="Ancho" class="form-input w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none">
+                                <p id="width-error" class="error-message hidden text-red-500 text-sm mt-1"></p>
+                            </div>
+                            <div>
+                                <input id="height" name="Alto_(cm)" type="number" inputmode="decimal" placeholder="Alto" class="form-input w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none">
+                                <p id="height-error" class="error-message hidden text-red-500 text-sm mt-1"></p>
+                            </div>
                         </div>
                     </div>
                     <div>
@@ -103,7 +110,7 @@
                     </div>
                     <div>
                         <label for="quantity" class="font-bold text-lg text-gray-800 block mb-3">4. Ingresa la Cantidad (desde 1.000 unidades) </label>
-                        <input id="quantity" name="Cantidad" type="number" inputmode="decimal" class="form-input w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500" placeholder="Ej: 1500" aria-label="Cantidad de stickers">
+                        <input id="quantity" name="Cantidad" type="number" inputmode="decimal" class="form-input w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none">
                         <p id="quantity-error" class="error-message hidden text-red-500 text-sm mt-1"></p>
                     </div>
                 </div>
@@ -120,20 +127,24 @@
                             <div class="flex justify-between items-center"><span class="text-md text-gray-600">Valor Unitario (Neto):</span><span id="unit-price" class="text-md font-semibold text-gray-800">$0</span></div>
                             <div class="flex justify-between items-center"><span class="text-md text-gray-600">Valor Neto:</span><span id="net-price" class="text-md font-semibold text-gray-800">$0</span></div>
                             <div class="flex justify-between items-center"><span class="text-md text-gray-600">IVA (19%):</span><span id="iva-price" class="text-md font-semibold text-gray-800">$0</span></div>
-                            <div id="total-price-wrapper" class="flex justify-between items-center mt-2 pt-2 border-t border-dashed rounded-md -mx-2 px-2"><span class="text-lg font-bold text-gray-900">Total a Pagar:</span><span id="total-price" class="text-2xl md:text-3xl font-black action-text">$0</span></div>
+                            <div id="total-price-wrapper" class="flex justify-between items-center mt-2 pt-2 border-t border-dashed rounded-md -mx-2 px-2"><span class="text-lg font-bold text-gray-900">Total:</span><span id="total-price" class="text-lg font-bold text-pink-600">$0</span></div>
                         </div>
                          <div id="contact-details" class="border-t border-gray-200 pt-4 space-y-4">
                             <h3 class="font-bold text-lg text-gray-800">Tus Datos para Enviar</h3>
                             <div>
                                 <label for="name" class="text-sm font-medium text-gray-700">Nombre</label>
-                                <input type="text" id="name" name="name" required class="form-input mt-1 block w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500">
+                                <input type="text" id="name" name="name" required class="form-input mt-1 block w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none">
+                            </div>
+                            <div>
+                                <label for="empresa" class="text-sm font-medium text-gray-700">Nombre de la Empresa / Proyecto</label>
+                                <input type="text" id="empresa" name="Empresa_Proyecto" required class="form-input mt-1 block w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none">
                             </div>
                              <div>
                                 <label for="email" class="text-sm font-medium text-gray-700">Email</label>
-                                <input type="email" id="email" name="email" required class="form-input mt-1 block w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500">
+                                <input type="email" id="email" name="email" required class="form-input mt-1 block w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none">
                             </div>
-                            <button id="submit-button" type="submit" class="w-full py-3 text-lg font-bold text-white action-bg rounded-lg shadow-md hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center">
-                                <span id="submit-button-text">Enviar Cotización</span>
+                            <button id="submit-button" type="submit" class="w-full py-3 text-lg font-bold text-white action-bg rounded-lg shadow-md hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2">
+                                <span id="submit-button-text">Solicitar Cotización Formal</span>
                                 <div id="submit-spinner" class="spinner hidden"></div>
                             </button>
                         </div>
@@ -175,9 +186,9 @@ document.addEventListener('DOMContentLoaded', () => {
             { minQuantity: 500, markup: 2.55 }, { minQuantity: 250, markup: 2.62 }, { minQuantity: 100, markup: 2.72 }
         ],
         shapes: [ 
-            { id: 'rectangular', name: 'Rectangular', multiplier: 1.0, icon: '<svg class="w-8 h-8 md:w-10 md:h-10 mx-auto mb-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 3h16v16H4z"></path></svg>' },
-            { id: 'circular', name: 'Circular', multiplier: 1.0, icon: '<svg class="w-8 h-8 md:w-10 md:h-10 mx-auto mb-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21a9 9 0 110-18 9 9 0 010 18z"></path></svg>' },
-            { id: 'troquelado', name: 'Troquelado', multiplier: 1.3, icon: '<svg class="w-8 h-8 md:w-10 md:h-10 mx-auto mb-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>' }
+            { id: 'rectangular', name: 'Rectangular', multiplier: 1.0, icon: '<svg class="w-8 h-8 md:w-10 md:h-10 mx-auto mb-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a2 2 0 012-2h12a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V5z"></path></svg>' },
+            { id: 'circular', name: 'Circular', multiplier: 1.0, icon: '<svg class="w-8 h-8 md:w-10 md:h-10 mx-auto mb-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></circle></svg>' },
+            { id: 'troquelado', name: 'Troquelado', multiplier: 1.3, icon: '<svg class="w-8 h-8 md:w-10 md:h-10 mx-auto mb-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m0 0h6m-6-6H6m0 0H0"></path></svg>' }
         ],
         materialOptions: [ 
             { id: 'vinilo_blanco', name: 'Vinilo Blanco', finishes: { mate: { name: 'Mate', costKey: 'vinilo_blanco_mate' }, brillante: { name: 'Brillante', costKey: 'vinilo_blanco_mate' } } },
@@ -195,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
         finishOptionsContainer: document.querySelector('#finish-options-container'),
         finishOptions: document.querySelector('#finish-options'),
         inputs: { width: document.querySelector('#width'), height: document.querySelector('#height'), quantity: document.querySelector('#quantity') },
-        hiddenInputs: { shape: document.querySelector('#hidden-shape'), roundedCorners: document.querySelector('#hidden-rounded-corners'), material: document.querySelector('#hidden-material'), finish: document.querySelector('#hidden-finish'), totalPrice: document.querySelector('#hidden-total-price')},
+        hiddenInputs: { shape: document.querySelector('#hidden-shape'), roundedCorners: document.querySelector('#hidden-rounded-corners'), material: document.querySelector('#hidden-material'), finish: document.querySelector('#hidden-finish'), totalPrice: document.querySelector('#hidden-total-price') },
         errors: { width: document.querySelector('#width-error'), height: document.querySelector('#height-error'), quantity: document.querySelector('#quantity-error') },
         summary: { shape: document.querySelector('#summary-shape'), size: document.querySelector('#summary-size'), material: document.querySelector('#summary-material'), quantity: document.querySelector('#summary-quantity'), unitPrice: document.querySelector('#unit-price'), netPrice: document.querySelector('#net-price'), ivaPrice: document.querySelector('#iva-price'), totalPrice: document.querySelector('#total-price'), totalPriceWrapper: document.querySelector('#total-price-wrapper') },
         submitButton: document.querySelector('#submit-button')
@@ -248,17 +259,15 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     const ui = {
         renderOptions: () => {
-            dom.shapeOptions.innerHTML = CONFIG.shapes.map(s => `<button type="button" data-shape="${s.id}" class="option-button border-2 border-gray-300 rounded-lg p-2 text-center text-sm md:text-base">${s.icon}<span class="font-semibold">${s.name}</span></button>`).join('');
-            dom.materialOptions.innerHTML = CONFIG.materialOptions.map(m => `<button type="button" data-material="${m.id}" class="w-full text-left option-button border-2 border-gray-300 rounded-lg p-4"><span class="font-semibold">${m.name}</span></button>`).join('');
+            dom.shapeOptions.innerHTML = CONFIG.shapes.map(s => `<button type="button" data-shape="${s.id}" class="option-button border-2 border-gray-300 rounded-lg p-2 text-center text-sm md:text-base hover:border-pink-400 transition-all">${s.icon}<div class="text-xs md:text-sm text-gray-700 font-medium">${s.name}</div></button>`).join('');
+            dom.materialOptions.innerHTML = CONFIG.materialOptions.map(m => `<button type="button" data-material="${m.id}" class="w-full text-left option-button border-2 border-gray-300 rounded-lg p-4 hover:border-pink-400 transition-all"><div class="font-semibold text-gray-800">${m.name}</div></button>`).join('');
         },
         update: () => {
-            // Se llama a la validación PRIMERO para mostrar mensajes de error inmediatamente.
             ui.validateAll(); 
             
             const isQuantityValid = state.quantity && state.quantity >= CONFIG.minimumQuantity && state.quantity <= CONFIG.maximumQuantity;
             const baseConfig = calculator.getBaseConfig();
             
-            // El cálculo de precio solo se ejecuta si la cantidad es válida y todos los demás campos están seleccionados.
             const { netPrice, unitPrice } = (isQuantityValid && baseConfig) ? calculator.forQuantity(state.quantity, baseConfig, CONFIG.priceTiers) : { netPrice: 0, unitPrice: 0 };
 
             const isValidAndCalculated = isQuantityValid && baseConfig && netPrice > 0;
@@ -318,7 +327,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const widthValid = ui.validateInput(dom.inputs.width, dom.errors.width, state.touched.width);
             const heightValid = ui.validateInput(dom.inputs.height, dom.errors.height, state.touched.height);
             const quantityValid = ui.validateInput(dom.inputs.quantity, dom.errors.quantity, state.touched.quantity);
-            // No retorna valor, solo ejecuta la validación visual
         }
     };
     const events = {
@@ -357,7 +365,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 button.classList.add('selected-option');
                 const selectedMaterial = CONFIG.materialOptions.find(m => m.id === state.material);
                 if (selectedMaterial) {
-                    dom.finishOptions.innerHTML = Object.keys(selectedMaterial.finishes).map(key => `<button type='button' data-finish='${key}' class='option-button border-2 border-gray-300 rounded-lg p-3 text-center'><span class='font-semibold'>${selectedMaterial.finishes[key].name}</span></button>`).join('');
+                    dom.finishOptions.innerHTML = Object.keys(selectedMaterial.finishes).map(key => `<button type='button' data-finish='${key}' class='option-button border-2 border-gray-300 rounded-lg p-3 text-center hover:border-pink-400 transition-all'>${selectedMaterial.finishes[key].name}</button>`).join('');
                     dom.finishOptionsContainer.classList.remove('hidden');
                 }
                 ui.update();
