@@ -104,16 +104,10 @@
                         </div>
                     </div>
                     <div>
-                        <!-- CAMBIO #1: REEMPLAZAR CAMPO "CANTIDAD" POR DROPDOWN "VOLUMEN_ESTIMADO" -->
-                        <label for="volume" class="font-bold text-lg text-gray-800 block mb-3">4. Selecciona el Volumen Estimado</label>
-                        <select id="volume" name="Volumen_Estimado" required class="form-input w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none">
-                            <option value="">Selecciona un volumen...</option>
-                            <option value="1.000 a 5.000 unidades">1.000 a 5.000 unidades (Pedido mínimo)</option>
-                            <option value="5.000 a 10.000 unidades">5.000 a 10.000 unidades</option>
-                            <option value="10.000 a 50.000 unidades">10.000 a 50.000 unidades</option>
-                            <option value="Más de 50.000 unidades">Más de 50.000 unidades</option>
-                        </select>
-                        <p id="volume-error" class="error-message hidden text-red-500 text-sm mt-1"></p>
+                        <!-- RESTAURADO: Campo cantidad numérico original -->
+                        <label for="quantity" class="font-bold text-lg text-gray-800 block mb-3">4. Ingresa la Cantidad (desde 1.000 unidades) </label>
+                        <input id="quantity" name="Cantidad" type="number" inputmode="decimal" class="form-input w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none">
+                        <p id="quantity-error" class="error-message hidden text-red-500 text-sm mt-1"></p>
                     </div>
                 </div>
                 <div class="lg:sticky top-8 h-fit">
@@ -123,7 +117,7 @@
                             <div class="flex justify-between"><span>Forma:</span><span id="summary-shape" class="font-semibold text-gray-800">--</span></div>
                             <div class="flex justify-between"><span>Tamaño:</span><span id="summary-size" class="font-semibold text-gray-800">--</span></div>
                             <div class="flex justify-between"><span>Material:</span><span id="summary-material" class="font-semibold text-gray-800">--</span></div>
-                            <div class="flex justify-between"><span>Volumen:</span><span id="summary-quantity" class="font-semibold text-gray-800">--</span></div>
+                            <div class="flex justify-between"><span>Cantidad:</span><span id="summary-quantity" class="font-semibold text-gray-800">--</span></div>
                         </div>
                         <div class="border-t border-gray-200 pt-4 mb-6 space-y-2">
                             <div class="flex justify-between items-center"><span class="text-md text-gray-600">Valor Unitario (Neto):</span><span id="unit-price" class="text-md font-semibold text-gray-800">$0</span></div>
@@ -137,7 +131,7 @@
                                 <label for="name" class="text-sm font-medium text-gray-700">Nombre</label>
                                 <input type="text" id="name" name="name" required class="form-input mt-1 block w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none">
                             </div>
-                            <!-- CAMBIO #2: AGREGAR CAMPO "EMPRESA_PROYECTO" BAJO EL NOMBRE -->
+                            <!-- CAMBIO #2: CAMPO "EMPRESA_PROYECTO" (MANTENIDO) -->
                             <div>
                                 <label for="empresa" class="text-sm font-medium text-gray-700">Nombre de la Empresa / Proyecto</label>
                                 <input type="text" id="empresa" name="Empresa_Proyecto" required class="form-input mt-1 block w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none">
@@ -199,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ]
     };
 
-    const state = { shape: null, width: null, height: null, material: null, finish: null, volume: null, roundedCorners: false, touched: { width: false, height: false, volume: false } };
+    const state = { shape: null, width: null, height: null, material: null, finish: null, quantity: null, roundedCorners: false, touched: { width: false, height: false, quantity: false } };
     const dom = {
         form: document.querySelector('#cotizador-form'),
         shapeOptions: document.querySelector('#shape-options'),
@@ -208,9 +202,9 @@ document.addEventListener('DOMContentLoaded', () => {
         materialOptions: document.querySelector('#material-options'),
         finishOptionsContainer: document.querySelector('#finish-options-container'),
         finishOptions: document.querySelector('#finish-options'),
-        inputs: { width: document.querySelector('#width'), height: document.querySelector('#height'), volume: document.querySelector('#volume') },
+        inputs: { width: document.querySelector('#width'), height: document.querySelector('#height'), quantity: document.querySelector('#quantity') },
         hiddenInputs: { shape: document.querySelector('#hidden-shape'), roundedCorners: document.querySelector('#hidden-rounded-corners'), material: document.querySelector('#hidden-material'), finish: document.querySelector('#hidden-finish'), totalPrice: document.querySelector('#hidden-total-price') },
-        errors: { width: document.querySelector('#width-error'), height: document.querySelector('#height-error'), volume: document.querySelector('#volume-error') },
+        errors: { width: document.querySelector('#width-error'), height: document.querySelector('#height-error'), quantity: document.querySelector('#quantity-error') },
         summary: { shape: document.querySelector('#summary-shape'), size: document.querySelector('#summary-size'), material: document.querySelector('#summary-material'), quantity: document.querySelector('#summary-quantity'), unitPrice: document.querySelector('#unit-price'), netPrice: document.querySelector('#net-price'), ivaPrice: document.querySelector('#iva-price'), totalPrice: document.querySelector('#total-price'), totalPriceWrapper: document.querySelector('#total-price-wrapper') },
         submitButton: document.querySelector('#submit-button')
     };
@@ -268,20 +262,12 @@ document.addEventListener('DOMContentLoaded', () => {
         update: () => {
             ui.validateAll(); 
             
-            const isVolumeValid = state.volume !== null && state.volume !== '';
+            const isQuantityValid = state.quantity && state.quantity >= CONFIG.minimumQuantity && state.quantity <= CONFIG.maximumQuantity;
             const baseConfig = calculator.getBaseConfig();
             
-            // Mapeo de volumen a cantidad numérica para cálculo
-            const volumeMap = {
-                '1.000 a 5.000 unidades': 3000,
-                '5.000 a 10.000 unidades': 7500,
-                '10.000 a 50.000 unidades': 30000,
-                'Más de 50.000 unidades': 100000
-            };
-            const quantity = volumeMap[state.volume] || null;
-            const { netPrice, unitPrice } = (isVolumeValid && baseConfig && quantity) ? calculator.forQuantity(quantity, baseConfig, CONFIG.priceTiers) : { netPrice: 0, unitPrice: 0 };
+            const { netPrice, unitPrice } = (isQuantityValid && baseConfig) ? calculator.forQuantity(state.quantity, baseConfig, CONFIG.priceTiers) : { netPrice: 0, unitPrice: 0 };
 
-            const isValidAndCalculated = isVolumeValid && baseConfig && netPrice > 0;
+            const isValidAndCalculated = isQuantityValid && baseConfig && netPrice > 0;
 
             if (isValidAndCalculated && hasInteracted) { sendGAEvent('cotizador_precio_calculado'); }
             let shapeName = state.shape ? CONFIG.shapes.find(s=>s.id===state.shape).name : '--';
@@ -291,7 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
             dom.summary.size.textContent = (state.width && state.height) ? `${state.width} x ${state.height} cm` : '--';
             const mat = CONFIG.materialOptions.find(m=>m.id===state.material);
             dom.summary.material.textContent = mat ? `${mat.name} ${state.finish ? `(${mat.finishes[state.finish].name})` : ''}` : '--';
-            dom.summary.quantity.textContent = state.volume ? state.volume : '--';
+            dom.summary.quantity.textContent = state.quantity ? `${state.quantity.toLocaleString('es-CL')} u.` : '--';
             const ivaAmount = Math.round(netPrice * CONFIG.ivaRate);
             const totalPrice = netPrice + ivaAmount;
             const unitPriceFormatted = unitPrice < 100 ? unitPrice.toLocaleString('es-CL', {minimumFractionDigits: 1, maximumFractionDigits: 1}) : Math.round(unitPrice).toLocaleString('es-CL');
@@ -321,12 +307,13 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         validateInput: (input, errorEl, touchedFlag) => {
             if (!touchedFlag) return true;
-            const value = input.value;
+            const value = parseFloat(input.value);
             let errorMessage = '';
-            if (value === '') {}
-            else if (input.type === 'number') {
-                const numValue = parseFloat(value);
-                if (isNaN(numValue) || numValue <= 0) { errorMessage = 'Debe ser positivo.'; }
+            if (input.value === '') {}
+            else if (isNaN(value) || value <= 0) { errorMessage = 'Debe ser positivo.'; } 
+            else if (input.id === 'quantity') {
+                if (value < CONFIG.minimumQuantity) errorMessage = `Mínimo: ${CONFIG.minimumQuantity.toLocaleString('es-CL')} u.`;
+                if (value > CONFIG.maximumQuantity) errorMessage = `Máximo: ${CONFIG.maximumQuantity.toLocaleString('es-CL')} u.`;
             }
             errorEl.textContent = errorMessage;
             errorEl.classList.toggle('hidden', !errorMessage);
@@ -336,6 +323,7 @@ document.addEventListener('DOMContentLoaded', () => {
         validateAll: () => {
             const widthValid = ui.validateInput(dom.inputs.width, dom.errors.width, state.touched.width);
             const heightValid = ui.validateInput(dom.inputs.height, dom.errors.height, state.touched.height);
+            const quantityValid = ui.validateInput(dom.inputs.quantity, dom.errors.quantity, state.touched.quantity);
         }
     };
     const events = {
@@ -387,7 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 button.classList.add('selected-option');
                 ui.update();
             });
-            ['width', 'height'].forEach(key => {
+            Object.keys(dom.inputs).forEach(key => {
                 const inputElement = dom.inputs[key];
                 inputElement.addEventListener('focus', () => { state.touched[key] = true; });
                 inputElement.addEventListener('input', e => {
@@ -399,12 +387,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     ui.update();
                 });
-            });
-            dom.inputs.volume.addEventListener('focus', () => { state.touched.volume = true; });
-            dom.inputs.volume.addEventListener('change', e => {
-                if (!hasInteracted) { sendGAEvent('cotizador_interaccion_inicial'); hasInteracted = true; }
-                state.volume = e.target.value || null;
-                ui.update();
             });
             const resizeObserver = new ResizeObserver(() => sendHeight());
             resizeObserver.observe(document.querySelector('.sofia-morales-cotizador'));
