@@ -75,6 +75,7 @@
             <input type="hidden" name="Material" id="hidden-material">
             <input type="hidden" name="Acabado" id="hidden-finish">
             <input type="hidden" name="Valor_Total_Calculado" id="hidden-total-price">
+            <input type="hidden" name="gclid" id="hidden-gclid" value="">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
                 <div class="space-y-6">
                     <div>
@@ -405,21 +406,14 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 <script>
-  // Escuchar mensajes que provienen de Squarespace
   window.addEventListener('message', function(event) {
-      // Por seguridad, confirmamos que el mensaje trae el GCLID
       if (event.data && event.data.type === 'SET_GCLID' && event.data.gclid) {
-          var form = document.querySelector('form');
-          if (form && !form.querySelector('input[name="gclid"]')) {
-              var input = document.createElement('input');
-              input.type = 'hidden';
-              input.name = 'gclid'; // Nombre para el Excel
-              input.value = event.data.gclid;
-              form.appendChild(input);
-          }
+          var input = document.getElementById('hidden-gclid');
+          if (input) input.value = event.data.gclid;
       }
   });
 </script>
+
 
 
 </body>
