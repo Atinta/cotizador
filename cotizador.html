@@ -404,6 +404,40 @@ document.addEventListener('DOMContentLoaded', () => {
     main();
 });
 </script>
+<script>
+  (function() {
+    // Atrapar el GCLID que le mandó Squarespace a través de la URL
+    var params = new URLSearchParams(window.location.search);
+    var gclid = params.get('gclid');
+    
+    if (gclid) {
+      function injectGclid() {
+        var forms = document.querySelectorAll('form');
+        forms.forEach(function(form) {
+          // Si el formulario ya tiene el campo, no lo duplicamos
+          if (!form.querySelector('input[name="gclid"]')) {
+              var input = document.createElement('input');
+              input.type = 'hidden';
+              input.name = 'gclid'; // Este es el nombre exacto que recibirá tu Excel
+              input.value = gclid;
+              form.appendChild(input);
+          }
+        });
+      }
+      
+      // Ejecutar al cargar la página. 
+      // Se repite un par de veces de forma invisible por si el formulario es lento en cargar.
+      document.addEventListener("DOMContentLoaded", injectGclid);
+      injectGclid();
+      var attempts = 0;
+      var interval = setInterval(function() {
+        injectGclid();
+        attempts++;
+        if (attempts > 5) clearInterval(interval);
+      }, 1000);
+    }
+  })();
+</script>
 
 </body>
 </html>
