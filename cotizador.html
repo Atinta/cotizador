@@ -338,6 +338,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 dom.submitButton.disabled = true;
                 document.querySelector('#submit-spinner').classList.remove('hidden');
                 document.querySelector('#submit-button-text').textContent = 'Enviando...';
+                // Recuperación: si tras 15s seguimos en la página (Formspree falló o no redirigió), reactivar el botón
+                setTimeout(() => {
+                    dom.form.dataset.submitting = '';
+                    dom.submitButton.disabled = false;
+                    document.querySelector('#submit-spinner').classList.add('hidden');
+                    document.querySelector('#submit-button-text').textContent = 'Solicitar Cotización Formal';
+                }, 15000);
                 ui.updateHiddenFields();
                 sendGAEvent('cotizador_formulario_enviado');
             });
