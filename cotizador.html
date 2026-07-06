@@ -333,6 +333,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const events = {
         bind: () => {
             dom.form.addEventListener('submit', (event) => {
+                if (dom.form.dataset.submitting === 'true') { event.preventDefault(); return; }
+                dom.form.dataset.submitting = 'true';
+                dom.submitButton.disabled = true;
+                document.querySelector('#submit-spinner').classList.remove('hidden');
+                document.querySelector('#submit-button-text').textContent = 'Enviando...';
                 ui.updateHiddenFields();
                 sendGAEvent('cotizador_formulario_enviado');
             });
