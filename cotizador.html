@@ -415,6 +415,20 @@ document.addEventListener('DOMContentLoaded', () => {
         sendHeight(); 
     }
     main();
+    fetch('./prices.json', { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (p) {
+        if (!p) return;
+        if (p.ivaRate != null) CONFIG.ivaRate = p.ivaRate;
+        if (p.minimumQuantity != null) CONFIG.minimumQuantity = p.minimumQuantity;
+        if (p.maximumQuantity != null) CONFIG.maximumQuantity = p.maximumQuantity;
+        if (p.productionCosts) CONFIG.productionCosts = p.productionCosts;
+        if (p.materials) CONFIG.materials = p.materials;
+        if (Array.isArray(p.priceTiers)) CONFIG.priceTiers = p.priceTiers;
+        if (Array.isArray(p.shapes)) p.shapes.forEach(function (s) { var l = CONFIG.shapes.find(function (x) { return x.id === s.id; }); if (l && s.multiplier != null) l.multiplier = s.multiplier; });
+        ui.update();
+      })
+      .catch(function () {});
 });
 </script>
 <script>
