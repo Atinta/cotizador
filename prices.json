@@ -1,5 +1,14 @@
 {
   "labCompetencia": [],
+  "reglaRollo": {
+    "tarifa": 11000,
+    "hSetup": 3,
+    "hCorte": 1,
+    "hEmbellecido": 0.75,
+    "hLaminado": 1,
+    "filmSqm": 750,
+    "margen": 40
+  },
   "ivaRate": 0.19,
   "minimumQuantity": 1000,
   "maximumQuantity": 180000,
@@ -47,14 +56,57 @@
       }
     ]
   },
-  "reglaRollo": {
-    "tarifa": 11000,
-    "hSetup": 3,
-    "hCorte": 1,
-    "hEmbellecido": 0.75,
-    "hLaminado": 1,
-    "filmSqm": 750,
-    "margen": 40
+  "materialCompras": {
+    "vinilo_blanco_mate": {
+      "historial": [
+        {
+          "fecha": "2026-06-22",
+          "proveedor": "Microgeo (factura)",
+          "precioNeto": 44684,
+          "anchoM": 1.37,
+          "largoM": 50,
+          "anchoUtilM": 1.27
+        },
+        {
+          "fecha": "2025-11-01",
+          "proveedor": "Papiro (cotiz. NV2013)",
+          "precioNeto": 45720,
+          "anchoM": 1.27,
+          "largoM": 50,
+          "anchoUtilM": null
+        }
+      ]
+    },
+    "vinilo_transparente_mate": {
+      "historial": [
+        {
+          "fecha": "2026-03-01",
+          "proveedor": "Papiro (cotiz. NV4003 VT)",
+          "precioNeto": 64770,
+          "anchoM": 1.27,
+          "largoM": 50,
+          "anchoUtilM": null
+        },
+        {
+          "fecha": "2025-12-01",
+          "proveedor": "Microgeo (ref. facturas nov-dic)",
+          "precioNeto": 40552,
+          "anchoM": 1.37,
+          "largoM": 50,
+          "anchoUtilM": null
+        }
+      ]
+    },
+    "tinta": {
+      "historial": [
+        {
+          "fecha": "2026-07-10",
+          "proveedor": "FileMaker (validado Etapa 1)",
+          "precioLitro": 32000,
+          "litrosPorM2": 0.011
+        }
+      ]
+    }
   },
   "materials": {
     "vinilo_blanco_mate": {
