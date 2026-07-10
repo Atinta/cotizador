@@ -46,6 +46,16 @@
       }
     ]
   },
+  "labCompetencia": [
+    {
+      "c": "PRUEBA-BORRAR",
+      "q": 5000,
+      "total": 200000,
+      "w": 5,
+      "h": 5,
+      "fecha": "2026-07-10"
+    }
+  ],
   "materials": {
     "vinilo_blanco_mate": {
       "name": "Vinilo Blanco Mate",
