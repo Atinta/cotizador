@@ -1,4 +1,5 @@
 {
+  "labCompetencia": [],
   "ivaRate": 0.19,
   "minimumQuantity": 1000,
   "maximumQuantity": 180000,
@@ -46,7 +47,15 @@
       }
     ]
   },
-  "labCompetencia": [],
+  "reglaRollo": {
+    "tarifa": 11000,
+    "hSetup": 3,
+    "hCorte": 1,
+    "hEmbellecido": 0.75,
+    "hLaminado": 1,
+    "filmSqm": 750,
+    "margen": 40
+  },
   "materials": {
     "vinilo_blanco_mate": {
       "name": "Vinilo Blanco Mate",
