@@ -3,7 +3,7 @@
   "minimumQuantity": 1000,
   "maximumQuantity": 180000,
   "productionCosts": {
-    "laborRatePerHour": 3500,
+    "laborRatePerHour": 3501,
     "prepPressMinutes": 120,
     "printerSetupMinutes": 30,
     "cutterSetupMinutes": 20,
