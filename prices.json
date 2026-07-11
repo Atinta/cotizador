@@ -60,56 +60,6 @@
       ]
     }
   },
-  "labCompetencia": [
-    {
-      "c": "Aloprint",
-      "q": 1000,
-      "total": 40336,
-      "w": 5,
-      "h": 5,
-      "fecha": "2026-07-10"
-    },
-    {
-      "c": "Aloprint",
-      "q": 5000,
-      "total": 163361,
-      "w": 5,
-      "h": 5,
-      "fecha": "2026-07-10"
-    },
-    {
-      "c": "Aloprint",
-      "q": 10000,
-      "total": 317647,
-      "w": 5,
-      "h": 5,
-      "fecha": "2026-07-10"
-    },
-    {
-      "c": "Aloprint",
-      "q": 20000,
-      "total": 635294,
-      "w": 5,
-      "h": 5,
-      "fecha": "2026-07-10"
-    },
-    {
-      "c": "Stickershop",
-      "q": 1000,
-      "total": 33605,
-      "w": 5,
-      "h": 5,
-      "fecha": "2026-07-10"
-    },
-    {
-      "c": "Stickershop",
-      "q": 5000,
-      "total": 168025,
-      "w": 5,
-      "h": 5,
-      "fecha": "2026-07-10"
-    }
-  ],
   "ivaRate": 0.19,
   "minimumQuantity": 1000,
   "maximumQuantity": 180000,
@@ -157,6 +107,104 @@
       }
     ]
   },
+  "labCompetencia": [
+    {
+      "c": "Aloprint",
+      "q": 1000,
+      "total": 40336,
+      "w": 5,
+      "h": 5,
+      "fecha": "2026-07-10"
+    },
+    {
+      "c": "Aloprint",
+      "q": 5000,
+      "total": 163361,
+      "w": 5,
+      "h": 5,
+      "fecha": "2026-07-10"
+    },
+    {
+      "c": "Aloprint",
+      "q": 10000,
+      "total": 317647,
+      "w": 5,
+      "h": 5,
+      "fecha": "2026-07-10"
+    },
+    {
+      "c": "Aloprint",
+      "q": 20000,
+      "total": 635294,
+      "w": 5,
+      "h": 5,
+      "fecha": "2026-07-10"
+    },
+    {
+      "c": "Aloprint",
+      "q": 50000,
+      "total": 1579160,
+      "w": 5,
+      "h": 5,
+      "fecha": "2026-07-11"
+    },
+    {
+      "c": "Aloprint",
+      "q": 100000,
+      "total": 3158319,
+      "w": 5,
+      "h": 5,
+      "fecha": "2026-07-11"
+    },
+    {
+      "c": "Aloprint",
+      "q": 180000,
+      "total": 5672269,
+      "w": 5,
+      "h": 5,
+      "fecha": "2026-07-11"
+    },
+    {
+      "c": "Stickershop",
+      "q": 1000,
+      "total": 33605,
+      "w": 5,
+      "h": 5,
+      "fecha": "2026-07-10"
+    },
+    {
+      "c": "Stickershop",
+      "q": 5000,
+      "total": 168025,
+      "w": 5,
+      "h": 5,
+      "fecha": "2026-07-10"
+    },
+    {
+      "c": "Stickershop",
+      "q": 20000,
+      "total": 672101,
+      "w": 5,
+      "h": 5,
+      "fecha": "2026-07-10"
+    },
+    {
+      "c": "Stickershop",
+      "q": 50000,
+      "total": 1680252,
+      "w": 5,
+      "h": 5,
+      "fecha": "2026-07-10"
+    },
+    {
+      "c": "Stickershop",
+      "q": 180000,
+      "total": 6049748,
+      "w": 5,
+      "h": 5,
+      "fecha": "2026-07-10"
+    }
+  ],
   "materials": {
     "vinilo_blanco_mate": {
       "name": "Vinilo Blanco Mate",
