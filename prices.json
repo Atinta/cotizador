@@ -60,53 +60,6 @@
       ]
     }
   },
-  "ivaRate": 0.19,
-  "minimumQuantity": 1000,
-  "maximumQuantity": 180000,
-  "productionCosts": {
-    "laborRatePerHour": 3500,
-    "prepPressMinutes": 120,
-    "printerSetupMinutes": 30,
-    "cutterSetupMinutes": 20,
-    "printSpeedSqmPerHour": 6.7,
-    "extraLaborCostPerDay": 28000,
-    "wasteTiers": [
-      {
-        "minQuantity": 100000,
-        "percentage": 0.2
-      },
-      {
-        "minQuantity": 15000,
-        "percentage": 0.25
-      },
-      {
-        "minQuantity": 1000,
-        "percentage": 0.3
-      }
-    ],
-    "outsourcing": [
-      {
-        "minQuantity": 80000,
-        "guillotineCost": 200000,
-        "extraLaborDays": 2
-      },
-      {
-        "minQuantity": 40000,
-        "guillotineCost": 100000,
-        "extraLaborDays": 1
-      }
-    ],
-    "packagingCostTiers": [
-      {
-        "minQuantity": 50000,
-        "cost": 150000
-      },
-      {
-        "minQuantity": 1000,
-        "cost": 50000
-      }
-    ]
-  },
   "labCompetencia": [
     {
       "c": "Aloprint",
@@ -205,6 +158,53 @@
       "fecha": "2026-07-10"
     }
   ],
+  "ivaRate": 0.19,
+  "minimumQuantity": 1000,
+  "maximumQuantity": 180000,
+  "productionCosts": {
+    "laborRatePerHour": 3500,
+    "prepPressMinutes": 120,
+    "printerSetupMinutes": 30,
+    "cutterSetupMinutes": 20,
+    "printSpeedSqmPerHour": 6.7,
+    "extraLaborCostPerDay": 28000,
+    "wasteTiers": [
+      {
+        "minQuantity": 100000,
+        "percentage": 0.2
+      },
+      {
+        "minQuantity": 15000,
+        "percentage": 0.25
+      },
+      {
+        "minQuantity": 1000,
+        "percentage": 0.3
+      }
+    ],
+    "outsourcing": [
+      {
+        "minQuantity": 80000,
+        "guillotineCost": 200000,
+        "extraLaborDays": 2
+      },
+      {
+        "minQuantity": 40000,
+        "guillotineCost": 100000,
+        "extraLaborDays": 1
+      }
+    ],
+    "packagingCostTiers": [
+      {
+        "minQuantity": 50000,
+        "cost": 150000
+      },
+      {
+        "minQuantity": 1000,
+        "cost": 50000
+      }
+    ]
+  },
   "materials": {
     "vinilo_blanco_mate": {
       "name": "Vinilo Blanco Mate",
