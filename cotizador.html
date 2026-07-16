@@ -186,6 +186,14 @@ document.addEventListener('DOMContentLoaded', () => {
             { minQuantity: 2000, markup: 2.38 }, { minQuantity: 1500, markup: 2.43 }, { minQuantity: 1000, markup: 2.47 },
             { minQuantity: 500, markup: 2.55 }, { minQuantity: 250, markup: 2.62 }, { minQuantity: 100, markup: 2.72 }
         ],
+        pricingModelV2: {
+            active: false,
+            anchorsM2: [[2.5, 14720], [5, 12920], [8.75, 11400], [12.5, 10120], [18.75, 8880], [25, 8120], [37.5, 7760], [62.5, 7600], [100, 7280], [125, 7120], [187.5, 6640], [250, 6280], [450, 5680]],
+            floorNet: 50000,
+            minAreaCm2: 9,
+            belowMin: 'extrapolar',
+            aboveMax: 'congelar'
+        },
         shapes: [ 
             { id: 'rectangular', name: 'Rectangular', multiplier: 1.0, icon: '<svg class="w-8 h-8 md:w-10 md:h-10 mx-auto mb-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a2 2 0 012-2h12a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V5z"></path></svg>' },
             { id: 'circular', name: 'Circular', multiplier: 1.0, icon: '<svg class="w-8 h-8 md:w-10 md:h-10 mx-auto mb-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></circle></svg>' },
@@ -226,6 +234,32 @@ document.addEventListener('DOMContentLoaded', () => {
             const selectedFinish = selectedMaterial.finishes[finish];
             return { stickerAreaCm2: width * height, shapeMultiplier: selectedShape.multiplier, materialCostKey: selectedFinish.costKey };
         },
+        rateM2: (totalM2, v2) => {
+            const A = v2.anchorsM2;
+            const n = A.length;
+            const lm = Math.log(totalM2);
+            const lx = A.map(p => Math.log(p[0]));
+            const ly = A.map(p => Math.log(p[1]));
+            if (lm <= lx[0]) {
+                if (v2.belowMin === 'congelar') return A[0][1];
+                const s0 = (ly[1] - ly[0]) / (lx[1] - lx[0]);
+                return Math.exp(ly[0] + s0 * (lm - lx[0]));
+            }
+            if (lm >= lx[n - 1]) {
+                if (v2.aboveMax === 'extrapolar') {
+                    const sN = (ly[n - 1] - ly[n - 2]) / (lx[n - 1] - lx[n - 2]);
+                    return Math.exp(ly[n - 1] + sN * (lm - lx[n - 1]));
+                }
+                return A[n - 1][1];
+            }
+            for (let i = 0; i < n - 1; i++) {
+                if (lm >= lx[i] && lm <= lx[i + 1]) {
+                    const t = (lm - lx[i]) / (lx[i + 1] - lx[i]);
+                    return Math.exp(ly[i] + t * (ly[i + 1] - ly[i]));
+                }
+            }
+            return A[n - 1][1];
+        },
         getRealCost: (quantity, baseConfig) => {
             if (!baseConfig) return { totalCost: 0, unitCost: 0 };
             const pc = CONFIG.productionCosts; const laborRatePerMinute = pc.laborRatePerHour / 60;
@@ -250,6 +284,16 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         forQuantity: (quantity, baseConfig, tiers) => {
             if (!baseConfig || !tiers) return { netPrice: 0, unitPrice: 0 };
+            const v2 = CONFIG.pricingModelV2;
+            if (v2 && v2.active && Array.isArray(v2.anchorsM2) && v2.anchorsM2.length >= 2) {
+                const areaCm2 = Math.max(baseConfig.stickerAreaCm2, v2.minAreaCm2 > 0 ? v2.minAreaCm2 : 0);
+                const areaM2 = areaCm2 / 10000;
+                const totalM2 = areaM2 * quantity;
+                let unitPrice = calculator.rateM2(totalM2, v2) * areaM2 * baseConfig.shapeMultiplier;
+                let netPrice = unitPrice * quantity;
+                if (v2.floorNet > 0 && netPrice < v2.floorNet) { netPrice = v2.floorNet; unitPrice = netPrice / quantity; }
+                return { netPrice, unitPrice };
+            }
             const currentTier = tiers.find(tier => quantity >= tier.minQuantity);
             const markup = currentTier ? currentTier.markup : 1;
             const { unitCost } = calculator.getRealCost(quantity, baseConfig);
@@ -425,6 +469,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (p.productionCosts) CONFIG.productionCosts = p.productionCosts;
         if (p.materials) CONFIG.materials = p.materials;
         if (Array.isArray(p.priceTiers)) CONFIG.priceTiers = p.priceTiers;
+        if (p.pricingModelV2) CONFIG.pricingModelV2 = p.pricingModelV2;
         if (Array.isArray(p.shapes)) p.shapes.forEach(function (s) { var l = CONFIG.shapes.find(function (x) { return x.id === s.id; }); if (l && s.multiplier != null) l.multiplier = s.multiplier; });
         ui.update();
       })
