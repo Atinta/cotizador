@@ -206,7 +206,7 @@
     ]
   },
   "pricingModelV2": {
-    "active": false,
+    "active": true,
     "anchorsM2": [
       [
         2.5,
