@@ -205,6 +205,72 @@
       }
     ]
   },
+  "pricingModelV2": {
+    "active": false,
+    "anchorsM2": [
+      [
+        2.5,
+        14720
+      ],
+      [
+        5,
+        12920
+      ],
+      [
+        8.75,
+        11400
+      ],
+      [
+        12.5,
+        10120
+      ],
+      [
+        18.75,
+        8880
+      ],
+      [
+        25,
+        8120
+      ],
+      [
+        37.5,
+        7760
+      ],
+      [
+        62.5,
+        7600
+      ],
+      [
+        100,
+        7280
+      ],
+      [
+        125,
+        7120
+      ],
+      [
+        187.5,
+        6640
+      ],
+      [
+        250,
+        6280
+      ],
+      [
+        450,
+        5680
+      ]
+    ],
+    "floorNet": 50000,
+    "minAreaCm2": 9,
+    "belowMin": "extrapolar",
+    "aboveMax": "congelar",
+    "cajas": {
+      "costoPorTanda": 500,
+      "tandaM2": 40,
+      "umbralM2": 40
+    }
+  },
   "materials": {
     "vinilo_blanco_mate": {
       "name": "Vinilo Blanco Mate",
