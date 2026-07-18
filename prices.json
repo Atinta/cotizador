@@ -158,6 +158,7 @@
       "fecha": "2026-07-10"
     }
   ],
+  "curva_precio_v2_desde": "2026-07-16T16:34:03.283Z",
   "ivaRate": 0.19,
   "minimumQuantity": 1000,
   "maximumQuantity": 180000,
@@ -261,7 +262,7 @@
         5680
       ]
     ],
-    "floorNet": 50000,
+    "floorNet": 120000,
     "minAreaCm2": 9,
     "belowMin": "extrapolar",
     "aboveMax": "congelar",
@@ -271,7 +272,6 @@
       "umbralM2": 40
     }
   },
-  "curva_precio_v2_desde": "2026-07-16T16:34:03.283Z",
   "materials": {
     "vinilo_blanco_mate": {
       "name": "Vinilo Blanco Mate",
