@@ -371,7 +371,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (dom.floorNote) {
                 if (isValidAndCalculated && floored) {
                     const pisoTxt = Math.round(CONFIG.pricingModelV2.floorNet * baseConfig.shapeMultiplier).toLocaleString('es-CL');
-                    dom.floorNote.innerHTML = '<strong>Pedido mínimo de producción:</strong> $' + pisoTxt + ' + IVA (incluye 1 diseño). En volúmenes mayores, el valor por unidad baja de forma importante.';
+                    dom.floorNote.innerHTML = '<strong>Pedido mínimo de producción:</strong> $' + pisoTxt + ' + IVA. En volúmenes mayores, el valor por unidad baja de forma importante.';
                     dom.floorNote.classList.remove('hidden');
                 } else {
                     dom.floorNote.classList.add('hidden');
