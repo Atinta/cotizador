@@ -110,7 +110,7 @@
                         </div>
                     </div>
                     <div>
-                        <label for="quantity" class="font-bold text-lg text-gray-800 block mb-3">4. Ingresa la Cantidad (desde 1.000 unidades) </label>
+                        <label for="quantity" id="quantity-label" class="font-bold text-lg text-gray-800 block mb-3">4. Ingresa la Cantidad (desde 1.000 unidades)</label>
                         <input id="quantity" name="Cantidad" type="number" inputmode="decimal" class="form-input w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none">
                         <p id="quantity-error" class="error-message hidden text-red-500 text-sm mt-1"></p>
                     </div>
@@ -129,6 +129,7 @@
                             <div class="flex justify-between items-center"><span class="text-md text-gray-600">Valor Neto:</span><span id="net-price" class="text-md font-semibold text-gray-800">$0</span></div>
                             <div class="flex justify-between items-center"><span class="text-md text-gray-600">IVA (19%):</span><span id="iva-price" class="text-md font-semibold text-gray-800">$0</span></div>
                             <div id="total-price-wrapper" class="flex justify-between items-center mt-2 pt-2 border-t border-dashed rounded-md -mx-2 px-2"><span class="text-lg font-bold text-gray-900">Total:</span><span id="total-price" class="text-lg font-bold text-pink-600">$0</span></div>
+                            <div id="floor-note" class="hidden mt-3 text-sm rounded-lg p-3" style="background-color:#ecfdf5; color:#047857; line-height:1.5;"></div>
                         </div>
                          <div id="contact-details" class="border-t border-gray-200 pt-4 space-y-4">
                             <h3 class="font-bold text-lg text-gray-800">Tus Datos para Enviar</h3>
@@ -161,6 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const CONFIG = {
         ivaRate: 0.19,
         minimumQuantity: 1000,
+        minimumQuantityCap: 2000,
         maximumQuantity: 180000,
         materials: {
             vinilo_blanco_mate: { name: 'Vinilo Blanco Mate', costPerSqm: 680 },
@@ -189,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
         pricingModelV2: {
             active: true,
             anchorsM2: [[2.5, 14720], [5, 12920], [8.75, 11400], [12.5, 10120], [18.75, 8880], [25, 8120], [37.5, 7760], [62.5, 7600], [100, 7280], [125, 7120], [187.5, 6640], [250, 6280], [450, 5680]],
-            floorNet: 50000,
+            floorNet: 120000,
             minAreaCm2: 9,
             belowMin: 'extrapolar',
             aboveMax: 'congelar'
@@ -218,7 +220,9 @@ document.addEventListener('DOMContentLoaded', () => {
         hiddenInputs: { shape: document.querySelector('#hidden-shape'), roundedCorners: document.querySelector('#hidden-rounded-corners'), material: document.querySelector('#hidden-material'), finish: document.querySelector('#hidden-finish'), totalPrice: document.querySelector('#hidden-total-price') },
         errors: { width: document.querySelector('#width-error'), height: document.querySelector('#height-error'), quantity: document.querySelector('#quantity-error') },
         summary: { shape: document.querySelector('#summary-shape'), size: document.querySelector('#summary-size'), material: document.querySelector('#summary-material'), quantity: document.querySelector('#summary-quantity'), unitPrice: document.querySelector('#unit-price'), netPrice: document.querySelector('#net-price'), ivaPrice: document.querySelector('#iva-price'), totalPrice: document.querySelector('#total-price'), totalPriceWrapper: document.querySelector('#total-price-wrapper') },
-        submitButton: document.querySelector('#submit-button')
+        submitButton: document.querySelector('#submit-button'),
+        quantityLabel: document.querySelector('#quantity-label'),
+        floorNote: document.querySelector('#floor-note')
     };
 
     let hasInteracted = false;
@@ -233,6 +237,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const selectedMaterial = CONFIG.materialOptions.find(m => m.id === material);
             const selectedFinish = selectedMaterial.finishes[finish];
             return { stickerAreaCm2: width * height, shapeMultiplier: selectedShape.multiplier, materialCostKey: selectedFinish.costKey };
+        },
+        // Mínimo de unidades dinámico (18-jul-2026): cantidad donde el pedido alcanza el piso (x forma),
+        // con techo minimumQuantityCap (2.000) y piso minimumQuantity (1.000). Bajo el techo, rige el piso en $.
+        minQuantityFor: (baseConfig) => {
+            const v2 = CONFIG.pricingModelV2;
+            const base = CONFIG.minimumQuantity;
+            if (!baseConfig || !(v2 && v2.active && Array.isArray(v2.anchorsM2) && v2.anchorsM2.length >= 2) || !(v2.floorNet > 0)) return base;
+            const cap = CONFIG.minimumQuantityCap || base;
+            const areaCm2 = Math.max(baseConfig.stickerAreaCm2, v2.minAreaCm2 > 0 ? v2.minAreaCm2 : 0);
+            const areaM2 = areaCm2 / 10000;
+            const floorShaped = v2.floorNet * baseConfig.shapeMultiplier;
+            const netAt = (q) => calculator.rateM2(areaM2 * q, v2) * areaM2 * baseConfig.shapeMultiplier * q;
+            if (netAt(base) >= floorShaped) return base;
+            if (netAt(cap) < floorShaped) return cap;
+            let lo = base, hi = cap;
+            for (let i = 0; i < 40; i++) { const mid = (lo + hi) / 2; if (netAt(mid) < floorShaped) { lo = mid; } else { hi = mid; } }
+            return Math.min(cap, Math.ceil(hi / 50) * 50);
         },
         rateM2: (totalM2, v2) => {
             const A = v2.anchorsM2;
@@ -291,8 +312,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const totalM2 = areaM2 * quantity;
                 let unitPrice = calculator.rateM2(totalM2, v2) * areaM2 * baseConfig.shapeMultiplier;
                 let netPrice = unitPrice * quantity;
-                if (v2.floorNet > 0 && netPrice < v2.floorNet) { netPrice = v2.floorNet; unitPrice = netPrice / quantity; }
-                return { netPrice, unitPrice };
+                // Piso por pedido escalado por forma (18-jul-2026): troquelado paga piso x1,3
+                const floorNetShaped = v2.floorNet > 0 ? v2.floorNet * baseConfig.shapeMultiplier : 0;
+                let floored = false;
+                if (floorNetShaped > 0 && netPrice < floorNetShaped) { netPrice = floorNetShaped; unitPrice = netPrice / quantity; floored = true; }
+                return { netPrice, unitPrice, floored };
             }
             const currentTier = tiers.find(tier => quantity >= tier.minQuantity);
             const markup = currentTier ? currentTier.markup : 1;
@@ -310,10 +334,16 @@ document.addEventListener('DOMContentLoaded', () => {
         update: () => {
             ui.validateAll(); 
             
-            const isQuantityValid = state.quantity && state.quantity >= CONFIG.minimumQuantity && state.quantity <= CONFIG.maximumQuantity;
             const baseConfig = calculator.getBaseConfig();
-            
-            const { netPrice, unitPrice } = (isQuantityValid && baseConfig) ? calculator.forQuantity(state.quantity, baseConfig, CONFIG.priceTiers) : { netPrice: 0, unitPrice: 0 };
+            const minQty = calculator.minQuantityFor(baseConfig);
+            const isQuantityValid = state.quantity && state.quantity >= minQty && state.quantity <= CONFIG.maximumQuantity;
+            if (dom.quantityLabel) {
+                dom.quantityLabel.textContent = baseConfig
+                    ? '4. Ingresa la Cantidad (para ' + state.width + ' × ' + state.height + ' cm, desde ' + minQty.toLocaleString('es-CL') + ' unidades)'
+                    : '4. Ingresa la Cantidad (desde ' + CONFIG.minimumQuantity.toLocaleString('es-CL') + ' unidades)';
+            }
+
+            const { netPrice, unitPrice, floored } = (isQuantityValid && baseConfig) ? calculator.forQuantity(state.quantity, baseConfig, CONFIG.priceTiers) : { netPrice: 0, unitPrice: 0, floored: false };
 
             const isValidAndCalculated = isQuantityValid && baseConfig && netPrice > 0;
 
@@ -338,6 +368,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 void dom.summary.totalPriceWrapper.offsetWidth;
                 dom.summary.totalPriceWrapper.classList.add('price-updated');
             }
+            if (dom.floorNote) {
+                if (isValidAndCalculated && floored) {
+                    const pisoTxt = Math.round(CONFIG.pricingModelV2.floorNet * baseConfig.shapeMultiplier).toLocaleString('es-CL');
+                    dom.floorNote.innerHTML = '<strong>Pedido mínimo de producción:</strong> $' + pisoTxt + ' + IVA (incluye 1 diseño). En volúmenes mayores, el valor por unidad baja de forma importante.';
+                    dom.floorNote.classList.remove('hidden');
+                } else {
+                    dom.floorNote.classList.add('hidden');
+                }
+            }
             dom.submitButton.disabled = !isValidAndCalculated;
             dom.submitButton.classList.toggle('ready-to-submit', isValidAndCalculated);
             sendHeight();
@@ -360,7 +399,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (input.value === '') {}
             else if (isNaN(value) || value <= 0) { errorMessage = 'Debe ser positivo.'; } 
             else if (input.id === 'quantity') {
-                if (value < CONFIG.minimumQuantity) errorMessage = `Mínimo: ${CONFIG.minimumQuantity.toLocaleString('es-CL')} u.`;
+                const minQ = calculator.minQuantityFor(calculator.getBaseConfig());
+                if (value < minQ) errorMessage = `Para este tamaño, mínimo: ${minQ.toLocaleString('es-CL')} u.`;
                 if (value > CONFIG.maximumQuantity) errorMessage = `Máximo: ${CONFIG.maximumQuantity.toLocaleString('es-CL')} u.`;
             }
             errorEl.textContent = errorMessage;
